@@ -201,7 +201,34 @@
                 // que cree una superficie en donde la altura ya no sea z=0 sino que tenga aluna forma
                 // o partón en particular.
 
+                this.crearSemiEsfera = function(){
 
+                    this.position_buffer = [];
+                    this.color_buffer = [];
+
+                    var radio = 1;
+                    for (var i = 0.0; i < this.rows; i++) { 
+                    	    var alfa = i * Math.PI / (this.rows-1);
+
+                       for (var j = 0.0; j < this.cols; j++) {
+	                       	var beta = j * Math.PI / (this.cols-1);
+        					var x = Math.cos(beta) * Math.sin(alfa);
+        					var y = Math.cos(alfa);
+					        var z = Math.sin(beta) * Math.sin(alfa);
+                           // Para cada vértice definimos su posición
+                           // como coordenada (x, y, z=0)
+                           this.position_buffer.push(radio*x);
+                           this.position_buffer.push(radio*y);
+                           this.position_buffer.push(radio*z);
+
+                           // Para cada vértice definimos su color
+                           this.color_buffer.push(x*y*z/this.rows * i);
+                           this.color_buffer.push(j*x/y);
+                           this.color_buffer.push(y*i/this.cols * j);
+                                                  
+                       };
+                    };
+                }
                 // Esta función crea e incializa los buffers dentro del pipeline para luego
                 // utlizarlos a la hora de renderizar.
                 this.setupWebGLBuffers = function(){
@@ -333,8 +360,8 @@
             
             function setupBuffers()
             {
-                my_grid = new VertexGrid(5,5);
-                my_grid.createUniformPlaneGrid();
+                my_grid = new VertexGrid(25,25);
+                my_grid.crearSemiEsfera();
                 my_grid.createIndexBuffer();
                 my_grid.setupWebGLBuffers();
             }
