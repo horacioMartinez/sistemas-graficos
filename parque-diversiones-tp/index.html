@@ -1,0 +1,203 @@
+<html>
+
+<head>
+<title>SG6671</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="PrototypalInheritance.js"></script>
+<script type="text/javascript" src="Grid.js"></script>
+<script type="text/javascript" src="Extrusion.js"></script>
+<script type="text/javascript" src="Circle.js"></script>
+<script type="text/javascript" src="Helix.js"></script>
+<script type="text/javascript" src="Bezier.js"></script>
+<script type="text/javascript" src="Carrito.js"></script>
+<script type="text/javascript" src="UtilsCurvas.js"></script>
+<script type="text/javascript" src="RollerCoaster.js"></script>
+<script type="text/javascript" src="Cilindro.js"></script>
+<script type="text/javascript" src="ExtrusionClosed.js"></script>
+<script type="text/javascript" src="ExtrusionOpened.js"></script>
+<script type="text/javascript" src="Cylinder.js"></script>
+<script type="text/javascript" src="Pentagono.js"></script>
+<script type="text/javascript" src="Wheel.js"></script>
+<script type="text/javascript" src="Cabin.js"></script>
+<script type="text/javascript" src="FairWheel.js"></script>
+<script type="text/javascript" src="Lago.js"></script>
+<script type="text/javascript" src="Revolution.js"></script>
+<script type="text/javascript" src="Carousel.js"></script>
+<script type="text/javascript" src="Piso.js"></script>
+<script type="text/javascript" src="Sphere.js"></script>
+<script type="text/javascript" src="Linea.js"></script>
+<script type="text/javascript" src="main.js"></script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+	precision mediump float;
+
+	attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec3 aVertexBinormal;
+    attribute vec3 aVertexTangent;
+    attribute vec2 aTextureCoord;
+    
+    uniform mat4 uViewMatrix;
+    uniform mat4 uModelMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vVertexPosition;
+
+    // TBN
+    varying vec3 vVertexTangent;
+    varying vec3 vVertexBinormal;
+    varying vec3 vVertexNormal;
+
+    void main(void) {
+		
+        vec4 pos_in_model = uModelMatrix * vec4(aVertexPosition, 1.0);
+		
+		// Transformamos al vértice al espacio de la proyección
+        gl_Position = uPMatrix * uViewMatrix * pos_in_model;
+
+        vTextureCoord = aTextureCoord;
+        vVertexTangent = normalize(uNMatrix * aVertexTangent);
+        vVertexBinormal = normalize(uNMatrix * aVertexBinormal);
+        vVertexNormal = normalize(uNMatrix * aVertexNormal);
+        vVertexPosition = vec3(pos_in_model);
+    }
+
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    // Samplers y si estan activados o no
+    uniform sampler2D uTextureSampler;
+	uniform sampler2D uNormalSampler;
+	uniform sampler2D uReflectionSampler;
+	uniform bool uUseNormalMap;
+    uniform bool uUseReflectionMap;
+    
+    // Punto de vista
+    uniform vec3 uCameraPos;
+
+    // Matriz para las normales
+	//uniform mat3 uNMatrix;
+	// Colores de las luces
+    uniform vec3 uAmbientColor;
+    uniform vec3 uLightPosition;
+	uniform vec3 uDirectionalColor;
+    uniform vec3 uSpecularColor;
+
+	varying vec2 vTextureCoord; 
+    varying vec3 vVertexPosition;
+
+    // TBN
+    varying vec3 vVertexTangent;
+    varying vec3 vVertexBinormal;
+    varying vec3 vVertexNormal;
+
+    uniform mat3 uNMatrix;
+
+    // Switch luz activada
+    uniform bool uLightSpecular;
+    uniform bool uLightDirectional;
+    uniform bool uLightAmbiental;
+    uniform bool uLightTotal;
+	uniform float uReflectionLevel;
+
+    void main(void) {
+        vec3 lightWeighting ;
+
+        vec3 lightDirNormalized =  normalize( uLightPosition - vVertexPosition );
+        //CAMBIADO!!
+        vec3 viewVec = normalize( uCameraPos - vVertexPosition );
+		
+        vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
+		vec4 textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec3 transformedNormal = vVertexNormal;
+        vec3 transformedBinormal = vVertexBinormal;
+        vec3 tranformedTangent = vVertexTangent;
+		if(uUseNormalMap){
+            vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
+            float factorT = 2.0 * rgbNormal[0] - 1.0;
+            float factorB = 2.0 * rgbNormal[1] - 1.0;
+            float factorN = 2.0 * rgbNormal[2] - 1.0;
+            //transformedNormal = vec3(0.0, 0.0, 1.0);
+            transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
+        }
+        //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
+		float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
+	    // [(2*(N*L)*N - L) * V] ^ alpha
+		vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
+        float corchete = max(dot(parentesis, viewVec), 0.0); 
+		float specularLightWeighting = pow(corchete,15.0);
+        if(uLightTotal){ lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ; }else{
+        if(uLightAmbiental){ lightWeighting = uAmbientColor ; }else{
+		if(uLightDirectional){ lightWeighting = uDirectionalColor * directionalLightWeighting ; }else{
+	    lightWeighting = uSpecularColor * specularLightWeighting ;
+		}
+        }
+        }
+        if(uUseReflectionMap){
+            //////////////////////////
+ 
+            //1 - u is the unit vector that goes from the camera to the current vertex: it is the position of the vertex in eye space and it is also the view vector.
+            //viewVec;
+            //2 - n is the vertex normal in eye space.
+            //transformedNormal;
+            //3 - r is the reflected vision vector against the normal n:
+            //          r = 2 * ( n dot u) * n - u
+            vec3 r = reflect(viewVec, transformedNormal);
+            //4 - m is an intermediate value:
+            // m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1)*(r.z+1) )
+            float x = r[0];
+            float y = -r[2];
+            float z = r[1];
+            float m = 2.0 * sqrt( (x)*(x) + (y)*(y) + (z)*(z) );
+            //5 - s and t are the final texture coordinates:
+            // s = r.x / m + 0.5
+            // t = r.y / m + 0.5 
+            vec2 cord;
+            cord[0] = .5*(x / m + 0.5);
+            cord[1] = (y / m + 0.5);
+
+            //////////////////////////////////
+
+            reflectionColor = texture2D(uReflectionSampler, cord);
+            gl_FragColor = (1.0 - uReflectionLevel)* vec4(textureColor.rgb * lightWeighting, textureColor.a) + uReflectionLevel*reflectionColor;
+        }else{
+            gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+        }
+    }
+
+</script>
+
+</head>
+
+<!--
+<EMBED SRC="./assets/theme.mp3" AUTOSTART=true LOOP=true VOLUME="80" WIDTH="0" HEIGHT="0">
+
+<p id="posicion">Lamarcus Aldridge</p>
+-->
+
+<body onload="webGLStart();">
+	<canvas id="canvas tp" style="border: 3px solid lightblue;" width="1280"
+		height="720" onmousemove="mouseMove(event)"
+		onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)">
+        Your browser does not support the HTML5 canvas element.
+    </canvas>
+
+<!-- 	<p id="temporizador">Lamarcus Aldridge</p> -->
+<!-- 	<p id="poscarro">Lamarcus Aldridge</p> -->
+<!-- 	<p id="velanim">Lamarcus Aldridge</p> -->
+<!-- 	<p id="angcamara">Lamarcus Aldridge</p> -->
+    <p>Controles por teclado:</p>
+    <p id="camara">C: cambiar cámara, actual: PRIMERA PERSONA</p>
+    <p></p> <p id="luz">L: cambiar componente de luz activa, actualmente estan todas las luces activas</p>
+    <p>W-A-S-D-Q-E: mover cámara primera persona</p>
+
+</body>
+
+</html>
