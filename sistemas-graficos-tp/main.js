@@ -68,6 +68,7 @@ function drawScene() {
 	gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
 
 	my_grid.drawVertexGrid();
+	cilindro.drawVertexGrid();
 }
 
 
@@ -154,9 +155,10 @@ function getShader(gl, id) {
 
 function setupBuffers() {
 	my_grid = new VertexGrid(5,5);
-	my_grid.createUniformPlaneGrid();
-	my_grid.createIndexBuffer();
-	my_grid.setupWebGLBuffers();
+	cilindro = new Cilindro(20,20);
+	//my_grid.createUniformPlaneGrid();
+	//my_grid.createIndexBuffer();
+	//my_grid.setupWebGLBuffers();
 }
 
 
