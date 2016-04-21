@@ -69,6 +69,7 @@ function drawScene() {
 
 	my_grid.drawVertexGrid();
 	cilindro.drawVertexGrid();
+	esfera.drawVertexGrid();
 }
 
 
@@ -154,11 +155,9 @@ function getShader(gl, id) {
 
 
 function setupBuffers() {
-	my_grid = new VertexGrid(5,5);
+	my_grid = new UniformPlaneGrid(5,5);
 	cilindro = new Cilindro(20,20);
-	//my_grid.createUniformPlaneGrid();
-	//my_grid.createIndexBuffer();
-	//my_grid.setupWebGLBuffers();
+	esfera = new Esfera(10,10);
 }
 
 

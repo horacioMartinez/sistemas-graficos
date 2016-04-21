@@ -5,7 +5,7 @@ function Cilindro(_rows, _cols) {
 Cilindro.prototype = Object.create(VertexGrid.prototype);
 Cilindro.prototype.constructor = Cilindro;
 
-Cilindro.prototype.createUniformPlaneGrid = function() {
+Cilindro.prototype.initBuffers = function() {
 
   this.position_buffer = [];
   this.color_buffer = [];
