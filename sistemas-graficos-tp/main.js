@@ -16,9 +16,12 @@ function initWebGL() {
 	initGL(canvas);										// Iniciamos el Canvas
 	setupWebGL(canvas);									// Creamos el ViewPort y establecemos el color de borrado de la pantalla
 	initShaders();										// Inicializamos los Shaders
-	
-	//new...											// Creamos la cámara y los objetos de la escena.		
-	tick();											// Tick. Luego Dibujamos la escena
+											
+	my_grid = new UniformPlaneGrid(5,5);				// Creamos la cámara y los objetos de la escena.
+	cilindro = new Cilindro(20,20);
+	esfera = new Esfera(10,10);
+		
+	tick();												// Tick. Luego Dibujamos la escena
 	setInterval(drawScene, 10);  
 }
 
@@ -52,7 +55,6 @@ function drawScene() {
 	// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
-	setupBuffers();
 	var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
 	// Preparamos una matriz de perspectiva.
 	mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
@@ -154,11 +156,6 @@ function getShader(gl, id) {
 }
 
 
-function setupBuffers() {
-	my_grid = new UniformPlaneGrid(5,5);
-	cilindro = new Cilindro(20,20);
-	esfera = new Esfera(10,10);
-}
 
 
 
