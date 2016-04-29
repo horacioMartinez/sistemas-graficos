@@ -23,6 +23,15 @@ function initWebGL() {
 
 	spaceStation = new SpaceStation();					// LE PUSE ESTACION ESPACIAL PARA YA TENER DEFINIDOS LOS OBJETOS NOMAS...
 	spaceStationCenter = new SpaceStationCenter();		// HAY UNA HERENCIA DE ESTAS A SUP DE BARRIDO Y REVOLUCION
+	
+	
+	var profileBuffer = [new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[]),
+						new Vertex([1,0,0] ,[0,1,0] ,[0,0,1],[1,0,0],[]),
+						new Vertex([0,-1,0],[1,0,0],[0,0,1],[0,-1,0],[]),
+						new Vertex([-1,0,0],[0,-1,0],[0,0,1],[-1,0,0],[]),
+						new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[])];
+						
+	extrusion = new ClosedExtrusion(profileBuffer, 3);
 		
 	tick();												// Tick. Luego Dibujamos la escena
 	setInterval(drawScene, 10);  
@@ -76,7 +85,8 @@ function drawScene() {
 	//cilindro.drawVertexGrid();
 	//esfera.drawVertexGrid();
 	//spaceStation.drawVertexGrid();
-	spaceStationCenter.drawVertexGrid();
+	//spaceStationCenter.drawVertexGrid();
+	extrusion.drawVertexGrid();
 }
 
 
