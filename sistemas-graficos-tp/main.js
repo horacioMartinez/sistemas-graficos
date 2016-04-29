@@ -21,7 +21,8 @@ function initWebGL() {
 	cilindro = new Cilindro(5,4);
 	esfera = new Esfera(10,10);					
 
-	spaceStation = new SpaceStation();
+	spaceStation = new SpaceStation();					// LE PUSE ESTACION ESPACIAL PARA YA TENER DEFINIDOS LOS OBJETOS NOMAS...
+	spaceStationCenter = new SpaceStationCenter();		// HAY UNA HERENCIA DE ESTAS A SUP DE BARRIDO Y REVOLUCION
 		
 	tick();												// Tick. Luego Dibujamos la escena
 	setInterval(drawScene, 10);  
@@ -74,7 +75,8 @@ function drawScene() {
 	//my_grid.drawVertexGrid();
 	//cilindro.drawVertexGrid();
 	//esfera.drawVertexGrid();
-	spaceStation.drawVertexGrid();
+	//spaceStation.drawVertexGrid();
+	spaceStationCenter.drawVertexGrid();
 }
 
 

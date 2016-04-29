@@ -48,6 +48,8 @@ SupBarrido.prototype.initBuffers = function() {
 			
 			textureCoordData.push(u);
 			textureCoordData.push(i / (this.profilePoints.length - 1));*/
+			
+			// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR						
 		}
 	}
 }
