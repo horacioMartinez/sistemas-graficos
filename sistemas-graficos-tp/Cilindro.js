@@ -16,7 +16,7 @@ Cilindro.prototype.initBuffers = function() {
       var alfa = j * Math.PI * 2 / (this.rows - 1);
       var x = Math.sin(alfa);
       var y = Math.cos(alfa);
-      var z = i / 10;
+      var z = i;
       // Para cada vértice definimos su posición
       // como coordenada (x, y, z)
       this.position_buffer.push(radio * x);

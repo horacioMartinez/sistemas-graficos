@@ -18,8 +18,10 @@ function initWebGL() {
 	initShaders();										// Inicializamos los Shaders
 											
 	my_grid = new UniformPlaneGrid(5,5);				// Creamos la cámara y los objetos de la escena.
-	cilindro = new Cilindro(20,20);
-	esfera = new Esfera(10,10);
+	cilindro = new Cilindro(5,4);
+	esfera = new Esfera(10,10);					
+
+	spaceStation = new SpaceStation();
 		
 	tick();												// Tick. Luego Dibujamos la escena
 	setInterval(drawScene, 10);  
@@ -69,9 +71,10 @@ function drawScene() {
 
 	gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
 
-	my_grid.drawVertexGrid();
-	cilindro.drawVertexGrid();
-	esfera.drawVertexGrid();
+	//my_grid.drawVertexGrid();
+	//cilindro.drawVertexGrid();
+	//esfera.drawVertexGrid();
+	spaceStation.drawVertexGrid();
 }
 
 
