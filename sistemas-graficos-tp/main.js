@@ -77,9 +77,9 @@ function drawScene() {
 	//my_grid.drawVertexGrid();
 	//cilindro.drawVertexGrid();
 	//esfera.drawVertexGrid();
-	//spaceStation.drawVertexGrid();
+	spaceStation.drawVertexGrid();
 	//spaceStationCenter.drawVertexGrid();
-	spaceStationCabin.drawVertexGrid();
+	//spaceStationCabin.drawVertexGrid();
 }
 
 
