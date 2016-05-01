@@ -20,6 +20,7 @@ CurvaBezierCubica.prototype.getVertices = function (puntosControl, delta){
             var tan = this.getTangente(p0,p1,p2,p3,t);
             var normal = this.getNormal(p0,p1,p2,p3,t);
             var binormal = this.getBinormal(p0,p1,p2,p3,t);
+
             var vertice = new Vertex(normal,tan,binormal,pos,null);
             vertices.push(vertice);
         }

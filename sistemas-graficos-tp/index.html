@@ -2,76 +2,117 @@
 <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 <meta content="ISO-8859-1" http-equiv="encoding">
 <html>
-	<head>
-		<title>Sistemas Graficos TP</title>
-		<style>
-			body{ background-color: grey; }
-			canvas{ background-color: white; }
-			textarea{ background-color: black; foreground-color: white;}
-        </style>
-		
-		<!-- Libraries -->
-		<script type="text/javascript" src="gl-matrix.js"></script>
-		<script type="text/javascript" src="webgl-utils.js"></script>
-		
-		<!-- Scrips -->
-		<script type="text/javascript" src="main.js"></script>
-		<script type="text/javascript" src="VertexGrid.js"></script>
-		<script type="text/javascript" src="UniformPlaneGrid.js"></script>
-		<script type="text/javascript" src="Cilindro.js"></script>
-		<script type="text/javascript" src="Esfera.js"></script>
-		<script type="text/javascript" src="SupBarrido.js"></script>
-		<script type="text/javascript" src="ClosedExtrusion.js"></script>
-		<script type="text/javascript" src="SupRevolucion.js"></script>
-		<script type="text/javascript" src="Vertex.js"></script>
-		<script type="text/javascript" src="SpaceStation.js"></script>
-		<script type="text/javascript" src="SpaceStationCenter.js"></script>
-		<script type="text/javascript" src="SpaceStationCabin.js"></script>
-		<script type="text/javascript" src="CurvaBezierCubica.js"></script>
+<head>
+    <title>Sistemas Graficos TP</title>
+    <style>
+        body {
+            background-color: grey;
+        }
 
-		<!-- Shaders -->
-		<script id="shader-vs" type="x-shader/x-vertex">
-			// Los atributos son características propias de cada vertice.
-			attribute vec3 aVertexPosition;
-			attribute vec3 aVertexColor;
+        canvas {
+            background-color: white;
+        }
 
-			// Los uniforms son características propias de una etapa de dibujado completa.
-			// Son comunes a todos los vertices involucrados en el dibujado.
-			uniform mat4 uMVMatrix;
-			uniform mat4 uPMatrix;
+        textarea {
+            background-color: black;
+            foreground-color: white;
+        }
+    </style>
 
-			// Los varying son propiedades que toman valor para cada fragmento a partir
-			// de interpolar linealmente entre los valores que se les asigna en cada 
-			// vértice del polígono al cual pertenecen.
-			varying highp vec4 vColor;    
+    <!-- Libraries -->
+    <script type="text/javascript" src="gl-matrix.js"></script>
+    <script type="text/javascript" src="webgl-utils.js"></script>
 
-			void main(void) {
-				// gl_Position es una variable "built-in" de GLSL que es usada para 
-				// almacenar la posición resultante del fragmento.
-				gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-				vColor = vec4(aVertexColor,1.0);
-			}
-		</script>
+    <!-- Scrips -->
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="VertexGrid.js"></script>
+    <script type="text/javascript" src="UniformPlaneGrid.js"></script>
+    <script type="text/javascript" src="Cilindro.js"></script>
+    <script type="text/javascript" src="Esfera.js"></script>
+    <script type="text/javascript" src="SupBarrido.js"></script>
+    <script type="text/javascript" src="ClosedExtrusion.js"></script>
+    <script type="text/javascript" src="SupRevolucion.js"></script>
+    <script type="text/javascript" src="Vertex.js"></script>
+    <script type="text/javascript" src="SpaceStation.js"></script>
+    <script type="text/javascript" src="SpaceStationCenter.js"></script>
+    <script type="text/javascript" src="SpaceStationCabin.js"></script>
+    <script type="text/javascript" src="CurvaBezierCubica.js"></script>
 
-		<script id="shader-fs" type="x-shader/x-fragment">
-		varying highp vec4 vColor;
+    <!-- Shaders -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
 
-		void main(void) {
-		  // gl_FragColor es una variable "built-in" de GLSL que es usada para 
-		  // almacenar el color resultante del fragmento.
-		  gl_FragColor = vColor;
-		}
-		</script>
-	</head>
-    
-    
-	<body onload="initWebGL()">
-		<center>
-			<h1>Sistemas Graficos - TP </h1>
-			<h2>Ludueno Lucas - Horacio Martinez</h2>
-			<canvas id="tp-canvas" width="1280" height="720">
-				Your browser does not support the HTML5 canvas element.
-			</scanvas>	
-		</center>
-	</body>
+    uniform mat4 uViewMatrix;
+    uniform mat4 uModelMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uDirectionalColor;
+
+    uniform bool uUseLighting;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    void main(void) {
+
+		// Transformamos al vértice al espacio de la cámara
+		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+
+		// Transformamos al vértice al espacio de la proyección
+        gl_Position = uPMatrix * pos_camera_view;
+
+		// Coordenada de textura sin modifiaciones
+        vTextureCoord = aTextureCoord;
+
+		////////////////////////////////////////////
+		// Calculos de la iluminación
+		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
+		normalize(light_dir);
+        if (!uUseLighting)
+		{
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        }
+		else
+		{
+            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        }
+		////////////////////////////////////////////
+    }
+
+    </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+		precision mediump float;
+
+    	varying vec2 vTextureCoord;
+    	varying vec3 vLightWeighting;
+
+    	uniform sampler2D uSampler;
+
+    	void main(void) {
+        	vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        	gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+    	}
+
+    </script>
+</head>
+
+
+<body onload="webGLStart()">
+<center>
+    <h1>Sistemas Graficos - TP </h1>
+    <h2>Ludueno Lucas - Horacio Martinez</h2>
+    <canvas id="tp-canvas" width="1280" height="720">
+        Your browser does not support the HTML5 canvas element.
+    </canvas>
+</center>
+</body>
 </html>
