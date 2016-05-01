@@ -1,11 +1,12 @@
-// OBJETO VERTEX-GRID
-// Definimos un constructor para el objeto VertexGrid
-function VertexGrid(_rows, _cols) {
+
+function VertexGrid(_rows, _cols, texturePath) {
+
+	texturePath = texturePath ? texturePath : "textures/mars_1k_color.jpg";
+
 	this.cant_vertices = 0;
 	this.cols = _cols;
 	this.rows = _rows;
 	this.index_buffer = null;
-
 
 
 	// estos 3 se deben completar con la funcion de abajo. (Se deben completar con las coordenadas x,y,z (ej 4,3,5,...) no con vertices.
@@ -21,20 +22,29 @@ function VertexGrid(_rows, _cols) {
 	this.createIndexBuffer();
 	this.setupWebGLBuffers();
 
-	this.initTexture("textures/mars_1k_color.jpg");
+	this.initTexture(texturePath);
 }
 
 VertexGrid.prototype.initTexture = function(texture_file){
-
-	var aux_texture = gl.createTexture();
-	this.texture = aux_texture;
+	this.texture = gl.createTexture();
 	this.texture.image = new Image();
-
+	var self = this;
 	this.texture.image.onload = function () {
-		handleLoadedTexture()
-	}
+		self.handleLoadedTexture();
+	};
 	this.texture.image.src = texture_file;
-}
+};
+
+VertexGrid.prototype.handleLoadedTexture = function(){
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	gl.bindTexture(gl.TEXTURE_2D, this.texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+	gl.generateMipmap(gl.TEXTURE_2D);
+
+	gl.bindTexture(gl.TEXTURE_2D, null);
+};
 
 VertexGrid.prototype.createIndexBuffer = function() {
 	var buffer_aux = [];
@@ -57,9 +67,16 @@ VertexGrid.prototype.createIndexBuffer = function() {
 
 	this.index_buffer = buffer_aux;
 	this.cant_vertices = buffer_aux.length;
-}
+};
 
 VertexGrid.prototype.setupWebGLBuffers = function() {
+
+	if (this.normal_buffer.length < 1){
+		throw new Error("Tenes que definir las normales de los vertices");
+	}
+	if (this.texture_coord_buffer.length < 1){
+		throw new Error("Tenes que definir las coordenadas de la textura de los vertices");
+	}
 
 	this.webgl_normal_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
@@ -84,7 +101,7 @@ VertexGrid.prototype.setupWebGLBuffers = function() {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
 	this.webgl_index_buffer.itemSize = 1;
 	this.webgl_index_buffer.numItems = this.index_buffer.length;
-}
+};
 
 
 VertexGrid.prototype.draw = function(modelMatrix) {
@@ -115,4 +132,4 @@ VertexGrid.prototype.draw = function(modelMatrix) {
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 	//gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
 	gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
-}
+};
