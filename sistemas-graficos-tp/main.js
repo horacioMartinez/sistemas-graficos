@@ -118,18 +118,14 @@ function mvPopMatrix() {
 	}
 	mvMatrix = mvMatrixStack.pop();
 }
-
-function setViewProjectionMatrix() {
+function setViewProjectionMatrix(CameraMatrix, pMatrix) {
 	gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 	gl.uniformMatrix4fv(shaderProgram.ViewMatrixUniform, false, CameraMatrix);
 }
 
-
 function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }
-
-
 
 function drawScene() {
 
@@ -156,21 +152,9 @@ function drawScene() {
 	/////////////////////////////////////////////////////
 	// Definimos la ubicación de la camara
 	// Pensamos por el momento marsamente la posición de la cámara, la cual siempre mira al mars.
-	var matriz_camara = mat4.create();
-	mat4.identity(matriz_camara);
-	//mat4.identity(CameraMatrix);
-	//mat4.translate(CameraMatrix, CameraMatrix, [0, 0, -60]);
-	var eye_point = vec3.create();
-	vec3.set(eye_point, 30, 65, -90);
-	var at_point = vec3.create();
-	vec3.set(at_point, 0, 0, 0);
-	var up_point = vec3.create();
-	vec3.set(up_point, 0, 1, 0);
 
-	mat4.lookAt(CameraMatrix, eye_point, at_point, up_point);
-	mat4.multiply(CameraMatrix, CameraMatrix, matriz_camara);
-
-	setViewProjectionMatrix();
+	camera.update(CameraMatrix);
+	setViewProjectionMatrix(CameraMatrix,pMatrix);
 
 	///////////////////////////////////////////////////////
 	//
@@ -330,7 +314,6 @@ function tick() {
 }
 
 
-
 function webGLStart() {
 	var canvas = document.getElementById("tp-canvas");
 	initGL(canvas);
@@ -349,6 +332,7 @@ function webGLStart() {
 	phobos.initTexture("textures/moon.gif");
 
 	estacion = new SpaceStation();
+	camera = new Camera(estacion);
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
