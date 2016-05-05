@@ -15,21 +15,37 @@ SupRevolucion.prototype.initBuffers = function() {
 		var alfa = i * 2 * Math.PI / (this.stepsRevolucion - 1);
 		
 		for (var j = 0; j < this.profileBuffer.length; j ++) {
+			// Definimos la matrix de rotación
+			var rotationMatrix = mat4.create();
+			mat4.rotate(rotationMatrix, rotationMatrix, alfa, [0, 1, 0]);	//Eje de rotacion = y
+			
 			var perfilPosition = this.profileBuffer[j].position;
+			var perfilNormal = this.profileBuffer[j].normal;
 			var perfilBinormal = this.profileBuffer[j].binormal;
 			var perfilTangent =  this.profileBuffer[j].tangent;
+				
+			// Posiciones		
+			var x = vec3.transformMat4([], perfilPosition, rotationMatrix)[0];
+			var y = vec3.transformMat4([], perfilPosition, rotationMatrix)[1];
+			var z = vec3.transformMat4([], perfilPosition, rotationMatrix)[2];
 			
-			var x = perfilPosition[0] * Math.cos(alfa); 
-			var y = perfilPosition[1] * 1;
-			var z = perfilPosition[0] * Math.sin(alfa);	// Notar que volvemos a usar la coordenada x ya que z = 0 para todo punto.
+			this.position_buffer.push(x, y, z);
 			
-			this.position_buffer.push(x);
-			this.position_buffer.push(y);
-			this.position_buffer.push(z);
-			
+			// Color
 			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
 			this.color_buffer.push(j * x);
 			this.color_buffer.push(y * i );	
+			
+			// Normales
+			var normal_x = vec3.transformMat4([], perfilNormal, rotationMatrix)[0];
+			var normal_y = vec3.transformMat4([], perfilNormal, rotationMatrix)[1];
+			var normal_z = vec3.transformMat4([], perfilNormal, rotationMatrix)[2];
+			
+			this.normal_buffer.push(normal_x, normal_y, normal_z);
+			
+			// Coordenadas de texturas
+			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
+			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
 		}
 	}
 	// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR						
