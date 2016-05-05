@@ -50,10 +50,9 @@ ClosedExtrusion.prototype.initBuffers = function() {
 			this.normal_buffer.push(perfilNormal[1]);
 			this.normal_buffer.push(perfilNormal[2]);
 
-			// Color
-			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
-			this.color_buffer.push(j * x);
-			this.color_buffer.push(y * i );	
+			// Coordenadas de textura
+			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
+			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
 			
 		}
 	}

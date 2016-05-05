@@ -1,8 +1,8 @@
 function SpaceStationCabin() {
 	var profileBuffer = [];
 	var stepsCabin = 20;
-	var heigth = 2;
-	var radio = 1;
+	var heigth = 4;
+	var radio = 0.25;
 	
 	for (var j = 0.0; j < stepsCabin; j++) {
 		var alfa = j * Math.PI * 2 / (stepsCabin - 1);
