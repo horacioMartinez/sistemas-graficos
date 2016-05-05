@@ -18,7 +18,10 @@ function SpaceStationCabin() {
 		
 		// Definimos la normal
 		var normal = [];
-		
+		normal.push(Math.cos(alfa));
+		normal.push(Math.sin(alfa));
+		normal.push(0);
+
 		// Definimos la tangente
 		var tangente = [];
 		

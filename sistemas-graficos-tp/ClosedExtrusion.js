@@ -10,6 +10,7 @@ ClosedExtrusion.prototype.constructor = ClosedExtrusion;
 ClosedExtrusion.prototype.initBuffers = function() {
 	this.position_buffer = [];
 	this.color_buffer = [];		
+	this.normal_buffer = [];
 	
 	// Calculo el centro promedio de la superficie
 	var centro_x = 0;
@@ -31,6 +32,7 @@ ClosedExtrusion.prototype.initBuffers = function() {
 	for (var i = 0; i < this.stepsClosedExtrusion; i++) {		
 		for (var j = 0; j < this.profileBuffer.length; j ++) {
 			var perfilPosition = this.profileBuffer[j].position;
+			var perfilNormal = this.profileBuffer[j].normal;
 			var perfilBinormal = this.profileBuffer[j].binormal;
 			var perfilTangent =  this.profileBuffer[j].tangent;
 			
@@ -38,10 +40,17 @@ ClosedExtrusion.prototype.initBuffers = function() {
 			var y = perfilPosition[1] * 1;
 			var z = perfilPosition[2] + i;
 			
+			// Posicion
 			this.position_buffer.push(x);
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
 			
+			// Normales
+			this.normal_buffer.push(perfilNormal[0]);
+			this.normal_buffer.push(perfilNormal[1]);
+			this.normal_buffer.push(perfilNormal[2]);
+
+			// Color
 			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
 			this.color_buffer.push(j * x);
 			this.color_buffer.push(y * i );	
@@ -58,6 +67,7 @@ ClosedExtrusion.prototype.initBuffers = function() {
 ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 	for (var j = 0; j < this.profileBuffer.length; j ++) {
 			var perfilPosition = this.profileBuffer[j].position;
+			var perfilNormal = this.profileBuffer[j].normal;
 			var perfilBinormal = this.profileBuffer[j].binormal;
 			var perfilTangent =  this.profileBuffer[j].tangent;
 			
@@ -65,21 +75,51 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			var y = perfilPosition[1] * 1;
 			var z = perfilPosition[2] + centro_z;
 			
+			// Posicion
 			this.position_buffer.push(x);
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
 			
+			// Normales
+			this.normal_buffer.push(perfilNormal[0]);
+			this.normal_buffer.push(perfilNormal[1]);
+			this.normal_buffer.push(perfilNormal[2]);
+			
+			// Color
 			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
 			this.color_buffer.push(j * x);
 			this.color_buffer.push(y);		
 			
-			// Vertice centro de la superficie
+			// Coordenadas
+			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
+			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
+			
+			
+			////////////////////////////////////////////////////////////////////
+			//////////////// Vertice centro de la superficie ///////////////////
+			////////////////////////////////////////////////////////////////////
+			
+			// Posicion
 			this.position_buffer.push(centro_x);
 			this.position_buffer.push(centro_y);
 			this.position_buffer.push(centro_z);
 			
+			// Normales
+			this.normal_buffer.push(0);
+			this.normal_buffer.push(0);
+			if (centro_z == 0) {
+				this.normal_buffer.push(-1);
+			} else {
+				this.normal_buffer.push(1);
+			}
+
+			// Color
 			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
 			this.color_buffer.push(j * x);
-			this.color_buffer.push(y);	
+			this.color_buffer.push(y);
+			
+			// Coordenadas
+			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
+			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));	
 	}
 }
