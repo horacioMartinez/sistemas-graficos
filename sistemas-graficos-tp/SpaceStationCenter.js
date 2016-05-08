@@ -29,9 +29,18 @@ function SpaceStationCenter() {
     this.centerPilar = new SupRevolucion(profileBuffer, 15);
 
     this.panels1 = new SolarPanelWing();
+    this.panels2 = new SolarPanelWing();
 }
 
 SpaceStationCenter.prototype.draw = function (modelMatrix) {
-    //this.centerPilar.draw(modelMatrix);
-    this.panels1.draw(modelMatrix);
+    this.centerPilar.draw(modelMatrix);
+
+    var matPanel1 = mat4.clone(modelMatrix);
+    mat4.translate(matPanel1,matPanel1,[0,5,0]);
+    this.panels1.draw(matPanel1);
+
+    var matPanel2 = mat4.clone(modelMatrix);
+    mat4.rotateX(matPanel2,matPanel2,Math.PI);
+    mat4.translate(matPanel2,matPanel2,[0,7,0]);
+    this.panels2.draw(matPanel2);
 };
