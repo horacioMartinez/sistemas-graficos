@@ -14,9 +14,7 @@ function SpaceStation() {
 	//this.down_panel = new Panel();
 }
 
-SpaceStation.prototype.constructor = SpaceStation;
-
 SpaceStation.prototype.draw = function(modelMatrix) {
-	this.cargo_bay.draw(modelMatrix);
-	//this.center.draw(modelMatrix);
+	//this.cargo_bay.draw(modelMatrix);
+	this.center.draw(modelMatrix);
 }

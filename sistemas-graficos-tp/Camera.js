@@ -16,8 +16,8 @@ function Camera() {
     this.at_point = [0, 0, 0];
     this.up_point = [0, 1, 0];
 
-    this.posInicial = [0, 0];
-    this.posFinal = [0, 0];
+    this.posInicial = {x: 0,y: 0};
+    this.posFinal = {x:0,y: 0};
 
     this.canvas = document.getElementById("tp-canvas");
     this.initListeners();

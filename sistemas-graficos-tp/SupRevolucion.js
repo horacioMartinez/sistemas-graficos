@@ -18,7 +18,7 @@ SupRevolucion.prototype.initBuffers = function() {
 			// Definimos la matrix de rotación
 			var rotationMatrix = mat4.create();
 			mat4.rotate(rotationMatrix, rotationMatrix, alfa, [0, 1, 0]);	//Eje de rotacion = y
-			
+
 			var perfilPosition = this.profileBuffer[j].position;
 			var perfilNormal = this.profileBuffer[j].normal;
 			var perfilBinormal = this.profileBuffer[j].binormal;
@@ -48,5 +48,4 @@ SupRevolucion.prototype.initBuffers = function() {
 			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
 		}
 	}
-	// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR						
 }
