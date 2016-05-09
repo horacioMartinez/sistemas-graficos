@@ -4,13 +4,6 @@ function SpaceStation() {
 	this.cabin = new SpaceStationCabin();
 
 	this.pipe = new SpaceStationCabin();
-	//this.pipe2 = new SpaceStationPipe();
-	//this.pipe3 = new SpaceStationPipe();
-	//this.pipe4 = new SpaceStationPipe();
-	//this.pipe5 = new SpaceStationPipe();
-	//this.pipe6 = new SpaceStationPipe();
-	//this.up_panel = new Panel();
-	//this.down_panel = new Panel();
 }
 
 SpaceStation.prototype.draw = function(modelMatrix) {

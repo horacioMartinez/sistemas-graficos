@@ -294,9 +294,10 @@ function drawScene() {
 	mat4.scale(model_space_station_matrix, model_space_station_matrix, [2.0, 2.0, 2.0]);
 
 	mat4.multiply(model_space_station_matrix, model_space_station_matrix, space_translation_matrix);
-	//mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAnglemars, [0, 1, 0]);
+	mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAnglemars, [0, 1, 0]);
 
 	estacion.draw(model_space_station_matrix);
+	//nave.draw(model_space_station_matrix);
 
 }
 
@@ -332,6 +333,7 @@ function webGLStart() {
 	phobos.initTexture("textures/moon.gif");
 
 	estacion = new SpaceStation();
+	nave = new Nave();
 	camera = new Camera(estacion);
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
