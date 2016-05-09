@@ -16,18 +16,38 @@ function SpaceStationCargoBay() {
 	this.dibujarCirculoExterior(0.0, stepsCircle*2, stepsCircle*2, radio = 1.25, profileBuffer);*/
 	
 	var curva = new CurvaBezierCubica();
+	
+	/*var internalPoints = [ [-1,0,0], [-1,0.75,0], [1,0.75,0], [1,0,0],
+										 [1,-0.25,0], [1,-0.5,0], [1,-1,0],
+										 [0.5,-1,0], [0,-1,0], [-1,-1,0],
+										 [-1,-0.5,0], [-1,-0.25,0], [-1,0,0] ];*/	
 										
-	var internalPoints = [ [-0.25,-1,0], [-0.75,-1,0], [-0.75,1,0], [-0.25,1,0],
+	var internalPoints = [ [0,-1,0], [-0.75,-1,0], [-0.75,1,0], [0,1,0],
 										 [0,1,0], [0.5,1,0], [1,1,0],
 										 [1,0.25,0], [1,-0.25,0], [1,-1,0],
-										 [0.5,-1,0], [0.25,-1,0], [-0.25,-1,0] ];							
+										 [0.5,-1,0], [0.25,-1,0], [-0,-1,0] ];							
 	
-	var externalPoints = [ [-1.25,0,0], [-1.25,2.5,0], [1.25,2.5,0], [1.25,0,0],
-										[1.25,-2.5,0], [-1.25,-2.5,0], [-1.25,0,0]];									
+	/*var externalPoints = [ [-1.25,0,0], [-1.25,2.5,0], [1.25,2.5,0], [1.25,0,0],
+										[1.25,-2.5,0], [-1.25,-2.5,0], [-1.25,0,0]];*/	
+											
+	var externalPoints = [ [0,-1.75,0], [-1.5,-1.75,0], [-1.5,1.75,0], [0,1.75,0],
+										[0,1.7,0], [0,1.6,0], [0,1.5,0],
+										[0.25,1.5,0], [0.5,1.5,0], [1,1.5,0],
+										[1,1.6,0], [1,1.7,0], [1,1.75,0],
+										
+										[2,1.75,0], [2,-1.75,0], [1,-1.75,0],
+										[1,-1.7,0], [1,-1.6,0], [1,-1.5,0],
+										[0.5,-1.5,0], [0.25,-1.5,0], [0,-1.5,0],
+										[0,-1.6,0], [0,-1.7,0], [0,-1.75,0]];								
 	
-	var profileBuffer = curva.getVertices(internalPoints,0.1);
-	profileBuffer = profileBuffer.concat( curva.getVertices(externalPoints,0.1) );
+	
+	var internalBuffer = curva.getVertices(internalPoints,0.1);
+	var externalBuffer = curva.getVertices(externalPoints,0.1);
+	profileBuffer = internalBuffer.concat( externalBuffer );
 
+	console.log(internalBuffer.length);
+	console.log(externalBuffer.length);
+		
 
 	var curva = new CurvaBezierCubica();
 	//var puntosControl = [[2,0,1] , [1,0,-2],  [-1,0,-2], [-2,0,1] ];

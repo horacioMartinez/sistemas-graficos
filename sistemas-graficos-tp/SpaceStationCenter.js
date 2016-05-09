@@ -1,9 +1,4 @@
 function SpaceStationCenter() {
-    /*var profileBuffer = [new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[]),
-     new Vertex([1,0,0] ,[0,1,0] ,[0,0,1],[1,0,0],[]),
-     new Vertex([0,-1,0],[1,0,0],[0,0,1],[0,-1,0],[]),
-     new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[])];*/
-
     /*var profileBuffer = [new Vertex([0, 1, 0], [], [], [0, 4/4, 0], []),		//TODO: HAY QUE DEFINIR BIEN LAS NORMALES
         new Vertex([0, 1, 0], [], [], [0.5/3, 4/4, 0], []),
         new Vertex([1, 0, 0], [], [], [0.5/3, 3.5/4, 0], []),
