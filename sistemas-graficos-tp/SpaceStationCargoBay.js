@@ -1,14 +1,9 @@
 function SpaceStationCargoBay() {
-	/*var profileBuffer = [new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[]),
-						new Vertex([1,0,0] ,[0,1,0] ,[0,0,1],[1,0,0],[]),
-						new Vertex([0,-1,0],[1,0,0],[0,0,1],[0,-1,0],[]),
-						new Vertex([-1,0,0],[0,-1,0],[0,0,1],[-1,0,0],[]),
-						new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[])];*/	// TODO: NORMALES INVERTIDAS PARTE DE ABAJO
 						
 	var profileBuffer = [];
 	
 	// Definimos el techo (semi círculo)
-	var stepsCircle = 20;
+	/*var stepsCircle = 20;
 	var radio = 1;
 	this.dibujarCirculoInterior(0.0, stepsCircle/2, stepsCircle, radio, profileBuffer);
 	
@@ -18,15 +13,25 @@ function SpaceStationCargoBay() {
 	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[0,1,0],[]));
 	
 	// Definimos la capa de afuera de la estación
-	this.dibujarCirculoExterior(0.0, stepsCircle*2, stepsCircle*2, radio = 1.25, profileBuffer);
+	this.dibujarCirculoExterior(0.0, stepsCircle*2, stepsCircle*2, radio = 1.25, profileBuffer);*/
+	
+	var curva = new CurvaBezierCubica();
+										
+	var internalPoints = [ [-0.25,-1,0], [-0.75,-1,0], [-0.75,1,0], [-0.25,1,0],
+										 [0,1,0], [0.5,1,0], [1,1,0],
+										 [1,0.25,0], [1,-0.25,0], [1,-1,0],
+										 [0.5,-1,0], [0.25,-1,0], [-0.25,-1,0] ];							
+	
+	var externalPoints = [ [-1.25,0,0], [-1.25,2.5,0], [1.25,2.5,0], [1.25,0,0],
+										[1.25,-2.5,0], [-1.25,-2.5,0], [-1.25,0,0]];									
+	
+	var profileBuffer = curva.getVertices(internalPoints,0.1);
+	profileBuffer = profileBuffer.concat( curva.getVertices(externalPoints,0.1) );
 
-						
-	/*var trayectoryBuffer = [new Vertex([0,1,0],[0,0,1],[1,0,0],[0,0,0],[]),
-							new Vertex([0,1,0],[0,0,1],[1,0,0],[1,0,1],[]),
-							new Vertex([0,1,0],[0,0,1],[1,0,0],[0,0,2],[])];*/
 
 	var curva = new CurvaBezierCubica();
-	var puntosControl = [[2,0,1] , [1,0,-2],  [-1,0,-2], [-2,0,1] ];
+	//var puntosControl = [[2,0,1] , [1,0,-2],  [-1,0,-2], [-2,0,1] ];
+	var puntosControl = [[4,0,-4] , [8,0,8],  [-8,0,8], [-4,0,-4] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.1);
 	SupBarrido.call(this, trayectoryBuffer, profileBuffer);
 }
