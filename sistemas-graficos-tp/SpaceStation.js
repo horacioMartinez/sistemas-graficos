@@ -9,8 +9,10 @@ function SpaceStation() {
 SpaceStation.prototype.draw = function(modelMatrix) {
 	
 	// Dibujamos la estación circular
-	this.cargo_bay.draw(modelMatrix);
-	
+	var matCargoBay = mat4.clone(modelMatrix);
+	mat4.rotateX(matCargoBay,matCargoBay,Math.PI/2);
+	this.cargo_bay.draw(matCargoBay);
+
 	// Dibujamos la superficie de revolución del medio
 	var matCenter = mat4.clone(modelMatrix);
 	mat4.translate(matCenter,matCenter,[0,0.75,0]);
