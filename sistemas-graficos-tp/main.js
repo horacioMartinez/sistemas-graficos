@@ -297,7 +297,7 @@ function drawScene() {
 	mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAnglemars, [0, 1, 0]);
 
 	estacion.draw(model_space_station_matrix);
-	//nave.draw(model_space_station_matrix);
+	nave.draw(model_space_station_matrix);
 
 }
 
