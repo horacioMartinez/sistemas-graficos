@@ -4,6 +4,7 @@ function SpaceStation() {
 	this.cabin = new SpaceStationCabin();
 
 	this.pipe = new SpaceStationCabin();
+	this.mangueraAstronauta = new MangueraAstronauta();
 }
 
 SpaceStation.prototype.draw = function(modelMatrix) {
@@ -28,4 +29,9 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 		mat4.translate(matCilinder,matCilinder,[0,0,-4]);
 		this.pipe.draw(matCilinder);
 	}
+
+	var matManguera = mat4.clone(modelMatrix);
+	mat4.translate(matManguera,matManguera, [10.1,-1.7,3]);
+	mat4.scale(matManguera,matManguera,[0.3,0.3,0.3]);
+	this.mangueraAstronauta.draw(matManguera);
 }

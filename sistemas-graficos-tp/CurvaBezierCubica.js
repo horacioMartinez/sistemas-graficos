@@ -16,6 +16,8 @@ CurvaBezierCubica.prototype.getVertices = function (puntosControl, delta){
         var p2 = puntosControl[i+2];
         var p3 = puntosControl[i+3];
         for (var t = 0; t <= 1; t = delta + t) {
+            if (t == 0 && i > 0) continue;
+
             var pos = this.getPosition(p0,p1,p2,p3,t);
             var tan = this.getTangente(p0,p1,p2,p3,t);
             var normal = this.getNormal(p0,p1,p2,p3,t);
