@@ -30,7 +30,7 @@ SupBarrido.prototype.initBuffers = function() {
 			this.position_buffer.push(x);
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
-			
+
 			// Normales
 			var nx = translationBinormal[0] * perfilNormal[0] + translationNormal[0] * perfilNormal[1] + translationTangent[0] * perfilNormal[2]; //	CUANDO TRABAJEMOS CON VECTORES DE NORMALES Y BINORMALES PARA ILUMINACIÓN TRABAJAMOS CON ESTO.
 			var ny = translationBinormal[1] * perfilNormal[0] + translationNormal[1] * perfilNormal[1] + translationTangent[1] * perfilNormal[2];

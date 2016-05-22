@@ -53,19 +53,14 @@ CurvaBezierCubica.prototype.getTangente = function (p0,p1,p2,p3,t) {
 };
 
 CurvaBezierCubica.prototype.getBinormal = function (p0,p1,p2,p3,t) {
-    var tan = this.getTangente(p0,p1,p2,p3,t);
-    var z = [0,0,1];
-    var res = [];
-    vec3.cross(res,tan,z);
-    vec3.normalize(res,res);
-    return res;
+    return [0,0,1];
 };
 
 CurvaBezierCubica.prototype.getNormal = function (p0,p1,p2,p3,t) {
     var tan = this.getTangente(p0,p1,p2,p3,t);
     var biNormal = this.getBinormal(p0,p1,p2,p3,t);
     var res = [];
-    vec3.cross(res,tan,biNormal);
+    vec3.cross(res,biNormal,tan);
     vec3.normalize(res,res);
     return res;
 };
