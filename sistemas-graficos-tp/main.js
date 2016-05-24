@@ -235,7 +235,7 @@ function webGLStart() {
 	estacion = new SpaceStation();
 	nave = new Nave();
 
-	camera = new Camera(estacion);
+	camera = new Camera(nave);
 
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);

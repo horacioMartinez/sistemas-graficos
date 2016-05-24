@@ -1,4 +1,5 @@
-function Camera() {
+function Camera(nave) {
+    this.nave = nave;
     this.TIPOS_DE_CAMARAS = {orbital: 1, primer_persona: 2, cabina_nave: 3, persecucion_nave: 4};
 
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.orbital;
@@ -44,22 +45,15 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
 
         case this.TIPOS_DE_CAMARAS.primer_persona:
             mat4.identity(cameraMatrix);
-            //console.log(this.at_point);
             var x = 150 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
             var y = 150 * Math.cos(this.anguloPolar);
             var z = 150 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
             this.at_point = [x, y, z];
-            /*
-             console.log("---------------------------------");
-             console.log(this.eye_point);
-             console.log(this.at_point);*/
             var pos = vec3.clone(this.eye_point);
             var target = vec3.clone(this.at_point);
 
             vec3.rotateY(pos, pos, [0, 0, 0], rotacionEstacion);
             vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
-            //console.log(pos);
-            //console.log([x,y,z]);
             mat4.lookAt(cameraMatrix, pos, target, this.up_point);
             break;
 
@@ -74,12 +68,10 @@ Camera.prototype.initListeners = function () {
         self.click(e);
     };
 
-    this.canvas.onmousewheel = function (e) {
-        console.log("HOLA");
-        var cant = event.wheelDelta / 120;
-        self.zoom(cant);
-        return false;
-    };
+    $(document).bind('DOMMouseScroll mousewheel', function(event){
+        var cant = event.originalEvent.wheelDelta || event.originalEvent.detail;
+        self.zoom(cant*2);
+    });
 
     window.addEventListener("keydown", function (e) {
         var tecla = e.keyCode;
@@ -149,7 +141,8 @@ Camera.prototype.mover_con_mouse = function (event) {
 };
 
 Camera.prototype.zoom = function (cant) {
-    this.radio += (cant);
+    if (this.camara_seleccionada === this.TIPOS_DE_CAMARAS.orbital)
+        this.radio += (cant);
     return false;
 };
 
@@ -162,19 +155,23 @@ Camera.prototype.seleccionarOrbital = function () {
     this.eye_point = [0, 0, 0];
     this.at_point = [0, 0, 0];
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.orbital;
+    this.nave.setMovimientoActivado(false);
 };
 
 Camera.prototype.seleccionarPrimerPersona = function () {
     this.eye_point = [4, 0, 3];
     this.anguloPolar= Math.PI/2;
+    this.anguloAzimuth = Math.PI * 1.5;
     //this.anguloAzimuth = Math.PI/8;
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.primer_persona;
+    this.nave.setMovimientoActivado(false);
 };
 
 Camera.prototype.seleccionarCabina = function () {
     this.eye_point = [0, 0, 0];
     console.log("TODO");
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.cabina_nave;
+    this.nave.setMovimientoActivado(true);
 };
 
 Camera.prototype.seleccionarPersecucion = function () {
@@ -182,6 +179,7 @@ Camera.prototype.seleccionarPersecucion = function () {
 
     console.log("TODO");
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.persecucion_nave;
+    this.nave.setMovimientoActivado(true);
 };
 
 Camera.prototype.moverAdelante = function () {

@@ -99,7 +99,5 @@ NaveCasco.prototype.initBuffers = function() {
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
 
 	}
-	console.log(this.position_buffer);
-	console.log(this.normal_buffer);
 
 }
