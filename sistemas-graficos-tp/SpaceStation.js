@@ -8,7 +8,7 @@ function SpaceStation() {
 }
 
 SpaceStation.prototype.draw = function(modelMatrix) {
-	
+
 	// Dibujamos la estación circular
 	var matCargoBay = mat4.clone(modelMatrix);
 	mat4.rotateX(matCargoBay,matCargoBay,Math.PI/2);

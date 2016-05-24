@@ -1,4 +1,8 @@
 function Camera() {
+    this.TIPOS_DE_CAMARAS = {orbital: 1, primer_persona: 2, cabina_nave: 3, persecucion_nave: 4};
+
+    this.camara_seleccionada = this.TIPOS_DE_CAMARAS.orbital;
+
     this.botonMouse = 1;
     this.teclaMas1 = 171;
     this.teclaMas2 = 107;
@@ -16,32 +20,46 @@ function Camera() {
     this.at_point = [0, 0, 0];
     this.up_point = [0, 1, 0];
 
-    this.posInicial = {x: 0,y: 0};
-    this.posFinal = {x:0,y: 0};
+    this.posInicial = {x: 0, y: 0};
+    this.posFinal = {x: 0, y: 0};
 
     this.canvas = document.getElementById("tp-canvas");
     this.initListeners();
 }
 
-Camera.prototype.update = function (cameraMatrix) {
-    /*var matriz_camara = mat4.create();
-     mat4.identity(matriz_camara);
-     var eye_point = vec3.create();
-     vec3.set(eye_point, 30, 65, -90);
-     var at_point = vec3.create();
-     vec3.set(at_point, 0, 0, 0);
-     var up_point = vec3.create();
-     vec3.set(up_point, 0, 1, 0);
+Camera.prototype.setTarget = function (target) {
+    this.at_point = target;
+};
 
-     mat4.lookAt(cameraMatrix, eye_point, at_point, up_point);
-     mat4.multiply(cameraMatrix, cameraMatrix, matriz_camara);*/
+Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
 
-    mat4.identity(cameraMatrix);
-    var x = this.radio * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
-    var y = this.radio * Math.cos(this.anguloPolar);
-    var z = this.radio * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
+    switch (this.camara_seleccionada) {
+        case this.TIPOS_DE_CAMARAS.orbital:
+            mat4.identity(cameraMatrix);
+            var x = this.radio * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
+            var y = this.radio * Math.cos(this.anguloPolar);
+            var z = this.radio * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
+            mat4.lookAt(cameraMatrix, [x, y, z], this.at_point, this.up_point);
+            break;
 
-    return mat4.lookAt(cameraMatrix, [x, y, z], this.at_point, this.up_point);
+        case this.TIPOS_DE_CAMARAS.primer_persona:
+            mat4.identity(cameraMatrix);
+            var x = 3 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
+            var y = 3 * Math.cos(this.anguloPolar);
+            var z = 35 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
+            //console.log(this.at_point);
+            var pos = [4, 0, 3];
+            var target = [x, y, z];
+            vec3.rotateY(pos, pos, [0, 0, 0], rotacionEstacion);
+            vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
+            //console.log(pos);
+            //console.log([x,y,z]);
+            mat4.lookAt(cameraMatrix, pos, target, this.up_point);
+            break;
+
+        default:
+            throw new Error("tipo de camara invalido");
+    }
 };
 
 Camera.prototype.initListeners = function () {
@@ -64,6 +82,30 @@ Camera.prototype.initListeners = function () {
         }
         if (tecla == self.teclaMenos1 || tecla == self.teclaMenos2) {
             self.zoom(10);
+        }
+        if (tecla == 87) { // W
+            console.log("W!")
+        }
+        if (tecla == 83) { // S
+            console.log("S!")
+        }
+        if (tecla == 65) { // A
+            console.log("A!")
+        }
+        if (tecla == 68) { // D
+            console.log("D!")
+        }
+        if (tecla === 49) { //1
+            self.seleccionarOrbital();
+        }
+        if (tecla === 50) { //2
+            self.seleccionarPrimerPersona();
+        }
+        if (tecla === 51) { //3
+            self.seleccionarCabina();
+        }
+        if (tecla === 52) { //4
+            self.seleccionarPersecucion();
         }
     }, true);
 
@@ -108,4 +150,20 @@ Camera.prototype.zoom = function (cant) {
 Camera.prototype.soltarClick = function (event) {
     if (event.which == this.botonMouse)
         this.clickeando = false;
+};
+
+Camera.prototype.seleccionarOrbital = function () {
+    this.camara_seleccionada = this.TIPOS_DE_CAMARAS.orbital;
+};
+
+Camera.prototype.seleccionarPrimerPersona = function () {
+    this.camara_seleccionada = this.TIPOS_DE_CAMARAS.primer_persona;
+
+};
+
+Camera.prototype.seleccionarCabina = function () {
+    console.log("TODO");
+};
+Camera.prototype.seleccionarPersecucion = function () {
+    console.log("TODO");
 };

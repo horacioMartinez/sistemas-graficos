@@ -129,6 +129,8 @@ function degToRad(degrees) {
 
 function drawScene() {
 
+	var DISTANCIA_ESTACION_MARTE = [5,0,0];
+
 	// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda
 	// el área disponible
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -149,119 +151,6 @@ function drawScene() {
 	//vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
 	gl.uniform3fv(shaderProgram.lightingDirectionUniform, lightPosition);
 
-	/////////////////////////////////////////////////////
-	// Definimos la ubicación de la camara
-	// Pensamos por el momento marsamente la posición de la cámara, la cual siempre mira al mars.
-
-	camera.update(CameraMatrix);
-	setViewProjectionMatrix(CameraMatrix,pMatrix);
-
-	///////////////////////////////////////////////////////
-	//
-	// Dibujamos la Tierra
-
-	// Configuramos la iluminación para la Tierra
-	gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2 );
-	gl.uniform3f(shaderProgram.directionalColorUniform, 0.05, 0.05, 0.05);
-
-	// Matriz de modelado de la Tierra
-	var model_matrix_deimos = mat4.create();
-	mat4.identity(model_matrix_deimos)        ;
-	var translate_deimos = mat4.create();
-	mat4.identity(translate_deimos);
-	mat4.translate(translate_deimos, translate_deimos, [10, 0, 0 ]);
-
-	// Matriz de rotación del eje sobre el plano de la eclíptica a 23 grados
-	var axis_inclination_matrix = mat4.create();
-	mat4.identity(axis_inclination_matrix);
-	mat4.rotate(axis_inclination_matrix, axis_inclination_matrix, -0.4014, [0, 0, 1]);
-
-	var translation_movement = mat4.create();
-	var inverse_translation_movement = mat4.create();
-
-	mat4.identity(translation_movement);
-	mat4.identity(inverse_translation_movement);
-
-	mat4.rotate(translation_movement, translation_movement, deimosRotationAnglemars, [0, 1, 0]);
-	mat4.rotate(inverse_translation_movement, inverse_translation_movement, -deimosRotationAnglemars, [0, 1, 0]);
-
-	// Las transformaciones aplicadas a la Tierra son:
-	// (el órden es el inverso al de las llamadas a la función multiply)
-	//
-	// 1. Se aplica el movimiento de rotación de la Tierra
-	// 2. Se inclina el eje de rotación 23 grados
-	// 3. Se aplica la inversa del ángulo de rotación del movimiento alrededor del Sol
-	//    con el fin de luego compensar dicha rotación y mantener el Eje de la Tierra siempre
-	//    en la misma orientación
-	// 4. A partir de acá se aplican las dos transformaciones que son comunes con la Tierra
-	//          4.1 La traslación para poner al sistema Tierra-Luna en orbita alrededor del Sol
-	//          4.2 La rotación para poner al sistema Tierra-Luna a girar en torno al Sol.
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, translation_movement);
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, translate_deimos);
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, inverse_translation_movement);
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, axis_inclination_matrix);
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, deimosRotationMatrix);
-
-	var scale_deimos_matrix = mat4.create();
-	mat4.identity(scale_deimos_matrix);
-	mat4.scale(scale_deimos_matrix, scale_deimos_matrix, [1.8, 1.8, 1.8]);
-
-	mat4.multiply(model_matrix_deimos, model_matrix_deimos, scale_deimos_matrix);
-
-	deimos.draw(model_matrix_deimos);
-	//
-	////////////////////////////////////////////////////////
-
-	///////////////////////////////////////////////////////
-	//
-	// Dibujamos la Luna
-
-	// Configuramos la iluminación para la Luna
-	gl.uniform3f(shaderProgram.ambientColorUniform, 0.3, 0.3, 0.3 );
-	gl.uniform3f(shaderProgram.directionalColorUniform, 0.1, 0.1, 0.1);
-
-	// Matriz de modelado de la Luna, respecto de la Tierra
-	var model_matrix_phobos = mat4.create();
-	mat4.identity(model_matrix_phobos);
-
-	// Traslación de la Luna respecto de la Tierra
-	// Es la traslación que la pone en órbita
-	var phobos_transalte_from_deimos_matrix = mat4.create();
-	mat4.identity(phobos_transalte_from_deimos_matrix);
-	mat4.translate(phobos_transalte_from_deimos_matrix, phobos_transalte_from_deimos_matrix, [25, 0,0]);
-
-	// Matríz de rotación de la Luna respecto de la tierra.
-	// Como la luna tiene un periodo de rotación sobre su eje que coincide
-	// con el de rotación alrededor de la Tierra, usamos la misma matríz
-	// para ambos movimientos.
-	var phobos_rotation_matrix = mat4.create();
-	mat4.identity(phobos_rotation_matrix);
-	mat4.rotate(phobos_rotation_matrix, phobos_rotation_matrix, phobosRotationAngledeimos, [0, 1 , 0]);
-
-	// Secuencia de transformaciones
-	// A la luna se le aplican las siguientes transformaciones:
-	// (el órden es el inverso al de las llamadas a la función multiply)
-	//
-	// 1. Se aplica una rotación sobre el propio eje de la Luna
-	// 2. Se aplica una traslación que representa la distancia entre la Tierra y la Luna
-	// 3. Se aplica una rotación para hacer rotar la Luna alrededor de la Tierra
-	// 4. A partir de acá se aplican las dos transformaciones que son comunes con la Tierra
-	//          4.1 La traslación para poner al sistema Tierra-Luna en orbita alrededor del Sol
-	//          4.2 La rotación para poner al sistema Tierra-Luna a girar en torno al Sol.
-	//mat4.multiply(model_matrix_phobos, model_matrix_phobos, translation_movement);
-	//mat4.multiply(model_matrix_phobos, model_matrix_phobos, translate_deimos);
-	mat4.multiply(model_matrix_phobos, model_matrix_phobos, phobos_rotation_matrix);
-	mat4.multiply(model_matrix_phobos, model_matrix_phobos, phobos_transalte_from_deimos_matrix);
-	mat4.multiply(model_matrix_phobos, model_matrix_phobos, phobos_rotation_matrix);
-
-	var scale_phobos_matrix = mat4.create();
-	mat4.identity(scale_phobos_matrix);
-	mat4.scale(scale_phobos_matrix, scale_phobos_matrix, [1.0, 0.84, 0.7]);
-
-	mat4.multiply(model_matrix_phobos, model_matrix_phobos, scale_phobos_matrix);
-
-
-	phobos.draw(model_matrix_phobos);
 
 	////////////////////////////////////////////////////////
 	//
@@ -274,30 +163,41 @@ function drawScene() {
 	// Matriz de modelado del mars
 	var model_matrix_mars = mat4.create();
 	mat4.identity(model_matrix_mars);
-	mat4.scale(model_matrix_mars, model_matrix_mars, [7.0, 7.0, 7.0]);
+	mat4.scale(model_matrix_mars, model_matrix_mars, [20.0, 20.0, 20.0]);
+
+
+	mat4.rotate(model_matrix_mars, model_matrix_mars, deimosRotationAnglemars, [0, 1, 0]);
+	mat4.translate(model_matrix_mars, model_matrix_mars, DISTANCIA_ESTACION_MARTE);
 
 	mars.draw(model_matrix_mars);
 	//
 
 
 	////////////////////////////////////////////////////////
-	//agregado por mi
-
-	// Matriz de modelado del mars
-
-	var space_translation_matrix = mat4.create();
-	mat4.identity(space_translation_matrix);
-	mat4.translate(space_translation_matrix, space_translation_matrix, [0, 3,-7]);
 
 	var model_space_station_matrix = mat4.create();
 	mat4.identity(model_space_station_matrix);
-	mat4.scale(model_space_station_matrix, model_space_station_matrix, [2.0, 2.0, 2.0]);
-
-	mat4.multiply(model_space_station_matrix, model_space_station_matrix, space_translation_matrix);
 	mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAnglemars, [0, 1, 0]);
+
+	var cilindro_matrix = mat4.create();
+	mat4.identity(cilindro_matrix);
+	mat4.rotate(cilindro_matrix, cilindro_matrix, deimosRotationAnglemars, [0, 1, 0]);
+
+	//cilindro = new Cilindro(1,100);
+	//cilindro.draw(cilindro_matrix);
 
 	estacion.draw(model_space_station_matrix);
 	nave.draw(model_space_station_matrix);
+
+
+
+	/////////////////////////////////////////////////////
+	// Definimos la ubicación de la camara
+
+	camera.update(CameraMatrix,deimosRotationAnglemars);
+	setViewProjectionMatrix(CameraMatrix,pMatrix);
+
+	///////////////////////////////////////////////////////
 
 }
 
