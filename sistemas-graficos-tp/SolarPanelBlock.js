@@ -2,7 +2,7 @@ function SolarPanelBlock() {
 
     this.semiblock1 = new SolarPanelSemiBlock();
     this.semiblock2 = new SolarPanelSemiBlock();
-    this.centerDisk = new Cilindro(0.15,0.05);
+    this.centerDisk = new Cilindro(0.15,0.05,15,"textures/metal.jpg");
 }
 
 
@@ -19,11 +19,11 @@ SolarPanelBlock.prototype.draw = function (modelMatrix) {
 };
 
 function SolarPanelSemiBlock() {
-    this.pipe = new Cilindro(0.02,1.5);
-    this.edgePipe = new Cilindro(0.02,0.4);
+    this.pipe = new Cilindro(0.02,1.5,15,"textures/pink.jpg");
+    this.edgePipe = new Cilindro(0.02,0.4,15,"textures/pink.jpg");
 
-    this.panel1 = new Plane(0.5,2);
-    this.panel2 = new Plane(0.5,2);
+    this.panel1 = new Plane(0.5,2,'textures/panel_solar.jpg');
+    this.panel2 = new Plane(0.5,2,'textures/panel_solar.jpg');
 }
 
 SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {

@@ -1,8 +1,8 @@
 function SolarPanelWing() {
     this.CANTIDAD_BLOCKS = 4;
     this.LARGO_MAIN_PIPE = 7;
-    this.mainPipe1 = new Cilindro(0.03, this.LARGO_MAIN_PIPE);
-    this.mainPipe2 = new Cilindro(0.03, this.LARGO_MAIN_PIPE);
+    this.mainPipe1 = new Cilindro(0.03, this.LARGO_MAIN_PIPE,15,"textures/pink.jpg");
+    this.mainPipe2 = new Cilindro(0.03, this.LARGO_MAIN_PIPE,15,"textures/pink.jpg");
     this.blocks = [];
 
     for ( var i = 0; i < this.CANTIDAD_BLOCKS ; i++) {

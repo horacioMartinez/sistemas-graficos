@@ -49,7 +49,7 @@ function SpaceStationCargoBay() {
 	//var puntosControl = [[2,0,1] , [1,0,-2],  [-1,0,-2], [-2,0,1] ];
 	var puntosControl = [[4,-4,0] , [8,8,0],  [-8,8,0], [-4,-4,0] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.1);
-	SupBarrido.call(this, trayectoryBuffer, profileBuffer);
+	SupBarrido.call(this, trayectoryBuffer, profileBuffer,"textures/container.png");
 }
 
 

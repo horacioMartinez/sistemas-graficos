@@ -4,6 +4,7 @@ function Nave() {
     this.leg = new NaveLeg();
     this.movimiento = new MovimientoNave();
     this.initListeners(this.movimiento);
+    this.posicion_inicial = [100, 20, -0];
 }
 
 Nave.prototype.draw = function (modelMatrix) {
@@ -12,11 +13,21 @@ Nave.prototype.draw = function (modelMatrix) {
     var matNave = mat4.clone(modelMatrix);
 
     mat4.scale(matNave, matNave, [0.2, 0.2, 0.2]);
-    mat4.translate(matNave, matNave, [-40, 20, -20]);
+    mat4.translate(matNave, matNave, this.posicion_inicial);
     mat4.multiply(matNave,matNave,this.movimiento.getMatriz());
+
+    this.position = vec3.transformMat4([],[0,0,0],matNave);
+
     // Dibujamos el Casco
     var matCasco = mat4.clone(matNave);
     mat4.translate(matCasco, matCasco, [-12, -3, 0]);
+
+    var matAux = mat4.clone(matNave);
+    mat4.translate(matAux, matAux, [12, 3, 0]);
+    this.posicion_cola = vec3.transformMat4([],[0,0,0],matAux);
+
+    this.arriba = vec3.transformMat4([],[0,0,1],matNave);
+
     this.casco.draw(matCasco);
 
     // Dibujamos las Alas
@@ -27,7 +38,23 @@ Nave.prototype.draw = function (modelMatrix) {
 
 };
 
+Nave.prototype.getPosicion = function(){
+    return this.position;
+};
 
+Nave.prototype.getDireccion = function(){
+    var v = vec3.subtract([],this.position,this.posicion_cola);
+    vec3.normalize(v,v);
+    return v;
+};
+
+Nave.prototype.getDireccionArriba = function(){
+    return vec3.normalize([],this.arriba);
+};
+
+Nave.prototype.getDirVelocidad = function(){
+  return vec3.normalize([],this.movimiento.getVelocidad());
+};
 
 
 
@@ -154,7 +181,7 @@ function MovimientoNave() {
         momento[1] = momento[1] * inercia + direccion[1] * 0.0001;
         momento[2] = momento[2] * inercia + direccion[2] * 0.0001;
 
-        vec3.add(posicion, posicion, momento);
+        vec3.subtract(posicion, posicion, momento);
 
     };
 
@@ -178,6 +205,10 @@ function MovimientoNave() {
         mat4.multiply(m, m, rotacion);
 
         return m;
+    };
+
+    this._getPos = function(){
+        return posicion;
     };
 
     this.getVelocidad = function () {

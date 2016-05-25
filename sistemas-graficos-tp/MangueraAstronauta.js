@@ -40,14 +40,14 @@ function MangueraAstronauta() {
     internalPoints = bezier.getVertices(internalPoints, 0.1);
 
     this.mangera = new SupBarrido(puntosTrayectoria, internalPoints);
-    this.astroNauta = new Plane(8*this.ESCALA_ASTRONAUTA,14*this.ESCALA_ASTRONAUTA);
+    this.astronauta = new Plane(8*this.ESCALA_ASTRONAUTA,8*this.ESCALA_ASTRONAUTA,'textures/astronaut.png');
 }
 
 MangueraAstronauta.prototype.draw = function (modelMatrix) {
     var matAstronauta = mat4.clone(modelMatrix);
-    mat4.translate(matAstronauta,matAstronauta,[-this.astroNauta.ancho/2,-this.astroNauta.alto/2,0]);
+    mat4.translate(matAstronauta,matAstronauta,[-this.astronauta.ancho/2,-this.astronauta.alto/2,0]);
     mat4.translate(matAstronauta,matAstronauta,this.PUNTO_FINAL);
     //mat4.rotateY(matAstronauta,matAstronauta,Math.PI/2);
     this.mangera.draw(modelMatrix);
-    this.astroNauta.draw(matAstronauta);
+    this.astronauta.draw(matAstronauta);
 };

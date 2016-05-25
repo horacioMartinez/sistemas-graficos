@@ -1,4 +1,4 @@
-function Cilindro(radio, largo, verticesBorde) {
+function Cilindro(radio, largo, verticesBorde,texturePath) {
     this.radio = radio || 1;
     this.largo = largo || 1;
     verticesBorde = verticesBorde || 15;
@@ -15,7 +15,7 @@ function Cilindro(radio, largo, verticesBorde) {
         new Vertex([0, -1, 0], [-1, 0, 0], [0, 0, 1], [0, -this.largo/2, 0], null)
     ];
 
-    this.sup = new SupRevolucion(profileBuffer, verticesBorde);
+    this.sup = new SupRevolucion(profileBuffer, verticesBorde,texturePath);
     //SupRevolucion.call(this, profileBuffer, 15);
 }
 

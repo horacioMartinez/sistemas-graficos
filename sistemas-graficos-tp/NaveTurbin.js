@@ -13,7 +13,7 @@ function NaveTurbin() {
 
 	} 					
 	var profileBuffer = curva.getVertices(puntosControl,0.1);
-  	SupRevolucion.call(this,profileBuffer, 15); 
+  	SupRevolucion.call(this,profileBuffer, 15, 'textures/mosaicos.jpg');
 }
 
 NaveTurbin.prototype = Object.create(SupRevolucion.prototype);

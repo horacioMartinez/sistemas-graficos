@@ -1,5 +1,5 @@
-function Esfera(_rows, _cols) {
-	VertexGrid.call(this, _rows, _cols);
+function Esfera(_rows, _cols,texturePath) {
+	VertexGrid.call(this, _rows, _cols,texturePath);
 }
 
 Esfera.prototype = Object.create(VertexGrid.prototype);

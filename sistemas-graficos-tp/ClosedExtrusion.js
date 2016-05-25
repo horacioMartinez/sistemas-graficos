@@ -1,7 +1,7 @@
-function ClosedExtrusion(profileBuffer, stepsClosedExtrusion) {	// stepsClosedExtrusion = numero de pasos
+function ClosedExtrusion(profileBuffer, stepsClosedExtrusion,texturePath) {	// stepsClosedExtrusion = numero de pasos
   	this.stepsClosedExtrusion = stepsClosedExtrusion;
 	this.profileBuffer = profileBuffer;
-  	VertexGrid.call(this, stepsClosedExtrusion + 4, profileBuffer.length); 
+  	VertexGrid.call(this, stepsClosedExtrusion + 4, profileBuffer.length,texturePath);
 }
 
 ClosedExtrusion.prototype = Object.create(VertexGrid.prototype);

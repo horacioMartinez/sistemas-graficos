@@ -220,17 +220,10 @@ function webGLStart() {
 	initGL(canvas);
 	initShaders();
 
-	deimos = new TexturedSphere(64, 64);
-	deimos.initBuffers();
-	deimos.initTexture("textures/moon.gif");
-
 	mars = new TexturedSphere(64,64);
 	mars.initBuffers();
 	mars.initTexture("textures/mars_1k_color.jpg");
 
-	phobos = new TexturedSphere(64, 64);
-	phobos.initBuffers();
-	phobos.initTexture("textures/moon.gif");
 
 	estacion = new SpaceStation();
 	nave = new Nave();

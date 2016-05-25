@@ -1,13 +1,7 @@
-// Esta función inicializa el position_buffer y el color buffer de forma de 
-// crear un plano de color gris que se extiende sobre el plano XY, con Z=0
-// El plano se genera centrado en el origen.
-// El propósito de esta función es a modo de ejemplo de como inicializar y cargar
-// los buffers de las posiciones y el color para cada vértice.
-
-function Plane(ancho, alto) {
+function Plane(ancho, alto,texturePath) {
     this.ancho = ancho || 1;
     this.alto = alto || 1;
-    VertexGrid.call(this, 2, 2);
+    VertexGrid.call(this, 2, 2,texturePath);
 }
 
 Plane.prototype = Object.create(VertexGrid.prototype);

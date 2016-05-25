@@ -40,7 +40,7 @@ function SpaceStationCabin() {
 						new Vertex([-1,0,0],[0,-1,0],[0,0,1],[-1,0,0],[]),
 						new Vertex([0,1,0],[-1,0,0] ,[0,0,1],[0,1,0],[])];*/
 
-	ClosedExtrusion.call(this, profileBuffer, heigth);
+	ClosedExtrusion.call(this, profileBuffer, heigth,"textures/metal.jpg");
 }
 
 SpaceStationCabin.prototype = Object.create(ClosedExtrusion.prototype);

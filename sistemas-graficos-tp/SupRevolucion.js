@@ -1,7 +1,7 @@
-function SupRevolucion(profileBuffer, stepsRevolucion) {	// stepsRevolucion = numero de pasos
+function SupRevolucion(profileBuffer, stepsRevolucion,texturePath) {	// stepsRevolucion = numero de pasos
   	this.stepsRevolucion = stepsRevolucion;
 	this.profileBuffer = profileBuffer;
-  	VertexGrid.call(this, stepsRevolucion, profileBuffer.length); 
+  	VertexGrid.call(this, stepsRevolucion, profileBuffer.length,texturePath);
 }
 
 SupRevolucion.prototype = Object.create(VertexGrid.prototype);

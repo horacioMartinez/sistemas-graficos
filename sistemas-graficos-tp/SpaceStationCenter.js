@@ -49,7 +49,7 @@ function SpaceStationCenter() {
 							
 	var profileBuffer = curva.getVertices(puntosControl,0.1);
 
-    this.centerPilar = new SupRevolucion(profileBuffer, 15);
+    this.centerPilar = new SupRevolucion(profileBuffer, 15,"textures/container.png");
 
     this.panels1 = new SolarPanelWing();
     this.panels2 = new SolarPanelWing();

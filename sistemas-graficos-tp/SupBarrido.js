@@ -1,7 +1,7 @@
-function SupBarrido(trayectoryBuffer, profileBuffer) {
+function SupBarrido(trayectoryBuffer, profileBuffer,texturePath) {
   	this.trayectoryBuffer = trayectoryBuffer;
 	this.profileBuffer = profileBuffer;
-  	VertexGrid.call(this, trayectoryBuffer.length, profileBuffer.length);
+  	VertexGrid.call(this, trayectoryBuffer.length, profileBuffer.length,texturePath);
 }
 
 SupBarrido.prototype = Object.create(VertexGrid.prototype);
