@@ -1,8 +1,7 @@
 function SpaceStation() {
-	this.cargo_bay = new SpaceStationCargoBay();
+	this.cargo_bay = new SpaceStationCargoBayComplete();
 	this.center = new SpaceStationCenter();
 	this.cabin = new SpaceStationCabin();
-
 	this.pipe = new SpaceStationCabin();
 	this.mangueraAstronauta = new MangueraAstronauta();
 }
@@ -11,6 +10,7 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 
 	// Dibujamos la estación circular
 	var matCargoBay = mat4.clone(modelMatrix);
+	mat4.translate(matCargoBay,matCargoBay,[0,0.5,0]);
 	mat4.rotateX(matCargoBay,matCargoBay,Math.PI/2);
 	this.cargo_bay.draw(matCargoBay);
 

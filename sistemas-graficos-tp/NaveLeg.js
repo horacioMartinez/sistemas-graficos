@@ -9,7 +9,7 @@ function NaveLeg() {
 						new Vertex([-1,0,0],[] ,[],[-1.5,1,0],[]),
 						new Vertex([0,1,0],[] ,[],[-1,2,0],[])];
 	
-	this.soporte = new ClosedExtrusion(profileBuffer, 2);
+	this.soporte = new ClosedExtrusion(profileBuffer, 2, "textures/container.png");
 	
 	
 	var profileBufferFierro = [new Vertex([0,1/4,0],[] ,[],[-1/4,2/4,0],[]),		//CAMBIAR NORMALES
@@ -22,7 +22,7 @@ function NaveLeg() {
 	var puntosControl = [[0,0,0.5] , [0,1,1],  [0,2,2], [0,3,3] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.1);
 	
-	this.fierro = new SupBarrido(trayectoryBuffer, profileBufferFierro);
+	this.fierro = new SupBarrido(trayectoryBuffer, profileBufferFierro, "textures/container.png");
 }
 
 NaveLeg.prototype.draw = function(modelMatrix) {
