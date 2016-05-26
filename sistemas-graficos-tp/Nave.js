@@ -32,12 +32,9 @@ Nave.prototype.draw = function (modelMatrix) {
     this.casco.draw(matCasco);
 
     // Dibujamos las Alas
-    this.wing.draw(matNave);
+    this.wing.draw(matNave,this.movimiento.getVelocidad());
 
     // Dibujamos las Patas
-    if (this.hideLegs) {
-		mat4.translate(matNave, matNave, [0, 3, 0]);
-	}
     this.legs.draw(matNave);
 
 };
