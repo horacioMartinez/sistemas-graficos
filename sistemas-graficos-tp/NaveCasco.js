@@ -8,6 +8,40 @@ NaveCasco.prototype.constructor = NaveCasco;
 NaveCasco.prototype.initBuffers = function() {
 	
 	var profileBuffer = [];
+	
+	// Primera Tapa
+	var centerFirstCover = new Vertex([-1,0,0],[] ,[],[1,2,3],[]);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,2],[]));		//1
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,4],[]));		//1'
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([-1,0,0],[] ,[],[1,2,4],[]));		//b
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,3.5],[]));	//n
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,3.5],[]));	//n
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,2.5],[]));	//m
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,2.5],[]));	//m
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([-1,0,0],[] ,[],[1,2,2],[]));		//a
+	profileBuffer.push(centerFirstCover);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,2],[]));		//1
+	profileBuffer.push(centerFirstCover);
+	
+	// Cuerpo
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,2],[]));		//1
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,4],[]));		//1'
+	profileBuffer.push(new Vertex([-1,0,0],[] ,[],[1,2,4],[]));		//b
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,3.5],[]));	//n
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,3.5],[]));	//n
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,2.5],[]));	//m
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[0.5,3,2.5],[]));	//m
+	profileBuffer.push(new Vertex([-1,0,0],[] ,[],[1,2,2],[]));		//a
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,2],[]));		//1
+	
+	
 	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,2],[]));		//1
 	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[1,1,4],[]));		//1'
 	profileBuffer.push(new Vertex([-1,0,0],[] ,[],[1,2,4],[]));		//b
@@ -75,6 +109,28 @@ NaveCasco.prototype.initBuffers = function() {
 
 	//profileBuffer.push(new Vertex([0,1,0],[] ,[],[10.6,4.5],[]));//s
 	//profileBuffer.push(new Vertex([0,1,0],[] ,[],[10,6,1.5],[]));//r
+	
+	// Ultima Tapa
+	var centerLastCover = new Vertex([1,0,0],[] ,[],[21,3,3],[]);
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[20.5,1,1.5],[]));//6
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[20.5,1,4.5],[]));//6'
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([1,0,0],[] ,[],[21,2,5],[]));//l
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([1,0,0],[] ,[],[21,3,4.5],[]));//otra
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[20,5,4.5],[]));//y
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([0,1,0],[] ,[],[20,5,1.5],[]));//x
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([1,0,0],[] ,[],[21,3,1.5],[]));//:=)
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([1,0,0],[] ,[],[21,2,1],[]));//k
+	profileBuffer.push(centerLastCover);
+	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[20.5,1,1.5],[]));//6
+	profileBuffer.push(centerLastCover);
 
 
 	var escalado_y = 1 * 1.5;
@@ -83,7 +139,7 @@ NaveCasco.prototype.initBuffers = function() {
 	
 			
 	for (var i = 0; i < profileBuffer.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR PARA NO
-		profileBuffer[i].position[0] /= escalado_x;		// TENER QUE ESCALAR EN CADA TICK
+		profileBuffer[i].position[0] /= escalado_x;		
 		profileBuffer[i].position[1] /= escalado_y;
 		profileBuffer[i].position[2] /= escalado_z;
 	} 

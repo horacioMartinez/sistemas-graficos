@@ -1,5 +1,5 @@
 function Nave() {
-    this.casco = new NaveCasco(6, 9);
+    this.casco = new NaveCasco(11, 9);
     this.wing = new NaveCompleteWing();
     this.legs = new NaveLegs();
     this.movimiento = new MovimientoNave();
