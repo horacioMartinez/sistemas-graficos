@@ -187,9 +187,10 @@ function drawScene() {
 	//cilindro.draw(cilindro_matrix);
 
 	estacion.draw(model_space_station_matrix);
-	nave.draw(model_space_station_matrix);
 
+	nave.draw(mat4.create());
 
+	universo.draw(mat4.create());
 
 	/////////////////////////////////////////////////////
 	// Definimos la ubicación de la camara
@@ -224,7 +225,7 @@ function webGLStart() {
 	mars.initBuffers();
 	mars.initTexture("textures/mars_1k_color.jpg");
 
-
+	universo = new Background();
 	estacion = new SpaceStation();
 	nave = new Nave();
 

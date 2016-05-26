@@ -197,15 +197,12 @@ Camera.prototype.seleccionarPrimerPersona = function () {
 
 Camera.prototype.seleccionarCabina = function () {
     this.eye_point = [0, 0, 0];
-    console.log("TODO");
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.cabina_nave;
     this.nave.setMovimientoActivado(true);
 };
 
 Camera.prototype.seleccionarPersecucion = function () {
     this.eye_point = [0, 0, 0];
-
-    console.log("TODO");
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.persecucion_nave;
     this.nave.setMovimientoActivado(true);
 };
@@ -215,7 +212,7 @@ Camera.prototype.moverAdelante = function () {
         return;
     var dir = [];
     vec3.normalize(dir, this.at_point);
-    vec3.scale(dir, dir, 0.3);
+    vec3.scale(dir, dir, 0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
 };
 
@@ -224,7 +221,7 @@ Camera.prototype.moverAtras = function () {
         return;
     var dir = [];
     vec3.normalize(dir, this.at_point);
-    vec3.scale(dir, dir, -0.3);
+    vec3.scale(dir, dir, -0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
 };
 
@@ -234,7 +231,7 @@ Camera.prototype.moverIzquierda = function () {
     var dir = [];
     vec3.normalize(dir, this.at_point);
     vec3.cross(dir,this.up_point,dir);
-    vec3.scale(dir, dir, 0.3);
+    vec3.scale(dir, dir, 0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
 };
 
@@ -244,6 +241,6 @@ Camera.prototype.moverDerecha = function () {
     var dir = [];
     vec3.normalize(dir, this.at_point);
     vec3.cross(dir,dir,this.up_point);
-    vec3.scale(dir, dir, 0.3);
+    vec3.scale(dir, dir, 0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
 };
