@@ -7,8 +7,8 @@ function NaveTurbin() {
 								  [0.5,-1.5,0], [0.25,-1.5,0], [0,-1.5,0] ];
 						
 	var escalado = 1.5;			
-	for (var i = 0; i < puntosControl.length; i++) {	// BIEN CABEZA
-		(puntosControl[i])[0] /= escalado;
+	for (var i = 0; i < puntosControl.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR PARA NO
+		(puntosControl[i])[0] /= escalado;				// TENER QUE ESCALAR EN CADA TICK
 		(puntosControl[i])[1] /= escalado;
 
 	} 					

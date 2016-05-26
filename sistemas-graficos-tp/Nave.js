@@ -1,10 +1,11 @@
 function Nave() {
-    this.casco = new NaveCasco(6, 9);
+    this.casco = new NaveCasco(11, 9);
     this.wing = new NaveCompleteWing();
-    this.leg = new NaveLeg();
+    this.legs = new NaveLegs();
     this.movimiento = new MovimientoNave();
     this.initListeners(this.movimiento);
     this.posicion_inicial = [100, 20, -0];
+    this.hideLegs = false;
 }
 
 Nave.prototype.draw = function (modelMatrix) {
@@ -34,7 +35,10 @@ Nave.prototype.draw = function (modelMatrix) {
     this.wing.draw(matNave);
 
     // Dibujamos las Patas
-    //this.leg.draw(modelMatrix);
+    if (this.hideLegs) {
+		mat4.translate(matNave, matNave, [0, 3, 0]);
+	}
+    this.legs.draw(matNave);
 
 };
 
@@ -81,7 +85,9 @@ Nave.prototype.initListeners = function (movimiento) {
         if (event.keyCode == 68)  movimientoNave.onTeclaDown(movimientoNave.TECLA_IZQUIERDA);	// S
         if (event.keyCode == 69)  movimientoNave.onTeclaDown(movimientoNave.TECLA_GIRO_HORARIO);  // q
         if (event.keyCode == 81)  movimientoNave.onTeclaDown(movimientoNave.TECLA_GIRO_ANTIHORARIO);	// e
-
+        
+        if (event.keyCode == 112);
+        if (event.keyCode == 80)  this.hideLegs = false;	// P
     });
 
     $(document).keyup(function (event) {
@@ -96,6 +102,9 @@ Nave.prototype.initListeners = function (movimiento) {
         if (event.keyCode == 68)  movimientoNave.onTeclaUp(movimientoNave.TECLA_IZQUIERDA);	// D
         if (event.keyCode == 69)  movimientoNave.onTeclaUp(movimientoNave.TECLA_GIRO_HORARIO);  // q
         if (event.keyCode == 81)  movimientoNave.onTeclaUp(movimientoNave.TECLA_GIRO_ANTIHORARIO);	// e
+        
+        if (event.keyCode == 112)  this.hideLegs = false;	// p
+        if (event.keyCode == 80)  this.hideLegs = false;	// P
 
     });
 };
@@ -195,7 +204,6 @@ function MovimientoNave() {
         //console.log("onTeclaUp "+tecla);
         var n = parseInt(tecla);
         if (!isNaN(n)) estadoTeclas[n] = false;
-
     };
 
     this.getMatriz = function () {

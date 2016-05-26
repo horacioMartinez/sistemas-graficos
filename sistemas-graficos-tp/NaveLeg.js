@@ -19,7 +19,7 @@ function NaveLeg() {
 							   new Vertex([0,1/4,0],[] ,[],[-1/4,2/4,0],[])];
 							   						   
 	var curva = new CurvaBezierCubica();
-	var puntosControl = [[0,0,0.5] , [0,2,2],  [0,4,4], [0,5,5] ];
+	var puntosControl = [[0,0,0.5] , [0,1,1],  [0,2,2], [0,3,3] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.1);
 	
 	this.fierro = new SupBarrido(trayectoryBuffer, profileBufferFierro);
