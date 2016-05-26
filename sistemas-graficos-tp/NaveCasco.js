@@ -82,8 +82,8 @@ NaveCasco.prototype.initBuffers = function() {
 	var escalado_z = 1;		
 	
 			
-	for (var i = 0; i < profileBuffer.length; i++) {	// BIEN CABEZA AGAIN!
-		profileBuffer[i].position[0] /= escalado_x;
+	for (var i = 0; i < profileBuffer.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR PARA NO
+		profileBuffer[i].position[0] /= escalado_x;		// TENER QUE ESCALAR EN CADA TICK
 		profileBuffer[i].position[1] /= escalado_y;
 		profileBuffer[i].position[2] /= escalado_z;
 	} 
