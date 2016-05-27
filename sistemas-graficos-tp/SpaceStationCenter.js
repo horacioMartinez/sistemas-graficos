@@ -1,26 +1,4 @@
 function SpaceStationCenter() {
-    /*var profileBuffer = [new Vertex([0, 1, 0], [], [], [0, 4/4, 0], []),		//TODO: HAY QUE DEFINIR BIEN LAS NORMALES
-        new Vertex([0, 1, 0], [], [], [0.5/3, 4/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [0.5/3, 3.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [1/3, 3/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [1/3, 2/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [2.5/3, 1.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [2.5/3, 0.5/4, 0], []),
-
-        new Vertex([1, 0, 0], [], [], [3/3, 0, 0], []),	//punto extra. aca va el relieve ese
-
-        new Vertex([1, 0, 0], [], [], [2.5/3, -0.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [2.5/3, -2/4, 0], []),
-
-        new Vertex([1, 0, 0], [], [], [2.75/3, -2.25/4, 0], []),	//punto extra. aca va el otro relieve
-
-        new Vertex([1, 0, 0], [], [], [2.5/3, -2.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [2.5/3, -3.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [1/3, -4/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [1/3, -5.5/4, 0], []),
-        new Vertex([1, 0, 0], [], [], [0, -5.5/4, 0], []),
-        new Vertex([0, 1, 0], [-1, 0, 0], [0, 0, 1], [0, 4/4, 0], [])];	// volvemos al punto inicial*/
-        
     var curva = new CurvaBezierCubica();
 	var puntosControl = [[0, 4, 0], [0.16, 4, 0], [0.32, 4, 0], [0.5, 4, 0],		// 0 < x < 3. -5.5 < y < 4
 									[0.5, 3.95, 0],[0.5, 3.80, 0],[0.5, 3.65, 0],
@@ -41,7 +19,7 @@ function SpaceStationCenter() {
 									[0, -2, 0], [0, 1, 0], [0, 4, 0]];
 						
 	var escalado = 1.5;			
-	for (var i = 0; i < puntosControl.length; i++) {	// BIEN CABEZA
+	for (var i = 0; i < puntosControl.length; i++) {	// ESCALADO A MANO PARA NO TENER QUE ESCALAR EN CADA TICK
 		(puntosControl[i])[0] /= escalado;
 		(puntosControl[i])[1] /= escalado;
 
