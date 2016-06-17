@@ -22,12 +22,11 @@ function SpaceStationCenter() {
 	for (var i = 0; i < puntosControl.length; i++) {	// ESCALADO A MANO PARA NO TENER QUE ESCALAR EN CADA TICK
 		(puntosControl[i])[0] /= escalado;
 		(puntosControl[i])[1] /= escalado;
-
 	} 
 							
 	var profileBuffer = curva.getVertices(puntosControl,0.1);
 
-    this.centerPilar = new SupRevolucion(profileBuffer, 15,"textures/container.png");
+    this.centerPilar = new SupRevolucion(profileBuffer, 15,"textures/shiphull.png");
 
     this.panels1 = new SolarPanelWing();
     this.panels2 = new SolarPanelWing();

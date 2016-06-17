@@ -14,7 +14,7 @@ SupRevolucion.prototype.initBuffers = function() {
 	for (var i = 0; i < this.stepsRevolucion; i++) {
 		var alfa = i * 2 * Math.PI / (this.stepsRevolucion - 1);
 		
-		for (var j = 0; j < this.profileBuffer.length; j ++) {
+		for (var j = 0; j < this.profileBuffer.length; j ++) {               
 			// Definimos la matrix de rotación
 			var rotationMatrix = mat4.create();
 			mat4.rotate(rotationMatrix, rotationMatrix, alfa, [0, 1, 0]);	//Eje de rotacion = y
@@ -30,12 +30,7 @@ SupRevolucion.prototype.initBuffers = function() {
 			var z = vec3.transformMat4([], perfilPosition, rotationMatrix)[2];
 			
 			this.position_buffer.push(x, y, z);
-			
-			// Color
-			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
-			this.color_buffer.push(j * x);
-			this.color_buffer.push(y * i );	
-			
+						
 			// Normales
 			var normal_x = vec3.transformMat4([], perfilNormal, rotationMatrix)[0];
 			var normal_y = vec3.transformMat4([], perfilNormal, rotationMatrix)[1];
@@ -43,9 +38,13 @@ SupRevolucion.prototype.initBuffers = function() {
 			
 			this.normal_buffer.push(normal_x, normal_y, normal_z);
 			
+			// Definimos u,v para las texturas
+			var u = 1.0 - (i / this.stepsRevolucion);
+            var v = 1.0 - (j / this.profileBuffer.length);
+            
 			// Coordenadas de texturas
-			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
-			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
+			this.texture_coord_buffer.push(u);
+			this.texture_coord_buffer.push(v);
 		}
 	}
 }
