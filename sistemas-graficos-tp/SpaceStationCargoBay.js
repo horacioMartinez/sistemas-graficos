@@ -51,7 +51,7 @@ function SpaceStationCargoBay() {
 	var profileBufferPisoExterno = curva.getVertices(puntosPisoExterno, 0.1);
 	
 	// Trayectoria	
-	var puntosControl = [[4,-4,0] , [10,10,0],  [-10,10,0], [-4,-4,0] ];
+	var puntosControl = [[6,-6,0] , [14,14,0],  [-14,14,0], [-6,-6,0] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.01);
 	
 	// Profile Buffer Tapas
@@ -65,7 +65,7 @@ function SpaceStationCargoBay() {
 	this.pisoInterno = new SupBarrido(trayectoryBuffer, profileBufferPisoInterno, "textures/piso.jpg", 5);
 
 	// Estructuras Externas
-	this.ventanaExterna = new SupBarrido(trayectoryBuffer, profileBufferVentanaExterna, "textures/ventanal.jpg", 4); // 10 ventanas
+	this.ventanaExterna = new SupBarrido(trayectoryBuffer, profileBufferVentanaExterna, "textures/ventanal.jpg", 4); // 4 ventanas
 	this.techoExterno = new SupBarrido(trayectoryBuffer, profileBufferTechoExterno, "textures/shiphull.png", 5);	
 	this.paredExterna2 = new SupBarrido(trayectoryBuffer, profileBufferParedExterna2, "textures/shiphull.png", 4);
 	this.pisoExterno = new SupBarrido(trayectoryBuffer, profileBufferPisoExterno, "textures/shiphull.png", 5);
@@ -76,8 +76,7 @@ function SpaceStationCargoBay() {
 }
 
 SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
-	//this.cargoBay.draw(modelMatrix);
-	
+
 	// Dibujo estructuras internas
 	this.paredInterna1.draw(modelMatrix);
 	this.techoInterno.draw(modelMatrix);
