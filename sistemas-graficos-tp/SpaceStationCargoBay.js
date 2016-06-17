@@ -1,5 +1,5 @@
 function SpaceStationCargoBay(trayectoryBuffer, profileBuffer) {				
-	SupBarrido.call(this, trayectoryBuffer, profileBuffer,"textures/container.png");
+	SupBarrido.call(this, trayectoryBuffer, profileBuffer,"textures/mosaicos.jpg", 3);
 }
 
 SpaceStationCargoBay.prototype = Object.create(SupBarrido.prototype);
