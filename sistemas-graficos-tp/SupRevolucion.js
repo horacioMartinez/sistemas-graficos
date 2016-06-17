@@ -28,15 +28,25 @@ SupRevolucion.prototype.initBuffers = function() {
 			var x = vec3.transformMat4([], perfilPosition, rotationMatrix)[0];
 			var y = vec3.transformMat4([], perfilPosition, rotationMatrix)[1];
 			var z = vec3.transformMat4([], perfilPosition, rotationMatrix)[2];
-			
 			this.position_buffer.push(x, y, z);
 						
 			// Normales
 			var normal_x = vec3.transformMat4([], perfilNormal, rotationMatrix)[0];
 			var normal_y = vec3.transformMat4([], perfilNormal, rotationMatrix)[1];
 			var normal_z = vec3.transformMat4([], perfilNormal, rotationMatrix)[2];
-			
 			this.normal_buffer.push(normal_x, normal_y, normal_z);
+			
+			// Tangentes
+			var tang_x = vec3.transformMat4([], perfilTangent, rotationMatrix)[0];	//TODO: Checkear que esté bien
+			var tang_y = vec3.transformMat4([], perfilTangent, rotationMatrix)[1];
+			var tang_z = vec3.transformMat4([], perfilTangent, rotationMatrix)[2];
+			this.tangent_buffer.push(tang_x, tang_y, tang_z);
+			
+			// Binormales
+			var binormal_x = vec3.transformMat4([], perfilBinormal, rotationMatrix)[0];	//TODO: Checkear que esté bien
+			var binormal_y = vec3.transformMat4([], perfilBinormal, rotationMatrix)[1];
+			var binormal_z = vec3.transformMat4([], perfilBinormal, rotationMatrix)[2];
+			this.binormal_buffer.push(binormal_x, binormal_y, binormal_z);
 			
 			// Definimos u,v para las texturas
 			var u = 1.0 - (i / this.stepsRevolucion);
