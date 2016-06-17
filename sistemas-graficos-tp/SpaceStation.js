@@ -1,5 +1,5 @@
 function SpaceStation() {
-	this.cargo_bay = new SpaceStationCargoBayComplete();
+	this.cargo_bay = new SpaceStationCargoBay();
 	this.center = new SpaceStationCenter();
 	this.cabin = new SpaceStationCabin();
 	this.pipe = new SpaceStationCabin();

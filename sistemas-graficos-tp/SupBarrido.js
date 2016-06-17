@@ -13,7 +13,9 @@ SupBarrido.prototype.initBuffers = function() {
 	this.position_buffer = [];
 	this.color_buffer = [];
 	
-	var textureLength = this.trayectoryBuffer.length / this.textureCount;
+	var textureLength = parseInt(this.trayectoryBuffer.length / this.textureCount);
+	console.log(this.trayectoryBuffer.length);
+	console.log(textureLength);
 				
 	for (var i = 0; i < this.trayectoryBuffer.length; i ++) {
 		var translationVertex = this.trayectoryBuffer[i];
@@ -51,9 +53,9 @@ SupBarrido.prototype.initBuffers = function() {
 			// Coordenadas
 			var u = 1.0 - (i % textureLength) / textureLength;
 			var v = 1.0 - (j / this.profileBuffer.length);
-
 			this.texture_coord_buffer.push(u);
 			this.texture_coord_buffer.push(v);
 		}
+		console.log(u);
 	}
 }
