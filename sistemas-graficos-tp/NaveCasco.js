@@ -1,5 +1,5 @@
-function NaveCasco(_rows, _cols) {
-  	VertexGrid.call(this, _rows, _cols, 'textures/plata.jpg');
+function NaveCasco() {
+  	VertexGrid.call(this, 11, 9, 'textures/plata.jpg');
 }
 
 NaveCasco.prototype = Object.create(VertexGrid.prototype);
@@ -132,12 +132,10 @@ NaveCasco.prototype.initBuffers = function() {
 	profileBuffer.push(new Vertex([0,-1,0],[] ,[],[20.5,1,1.5],[]));//6
 	profileBuffer.push(centerLastCover);
 
-
 	var escalado_y = 1 * 2;
 	var escalado_x = 1;
 	var escalado_z = 1;		
-	
-			
+		
 	for (var i = 0; i < profileBuffer.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR LUEGO => EFICIENCIA!
 		profileBuffer[i].position[0] /= escalado_x;		
 		profileBuffer[i].position[1] /= escalado_y;
@@ -154,5 +152,4 @@ NaveCasco.prototype.initBuffers = function() {
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
 	}
-
 }

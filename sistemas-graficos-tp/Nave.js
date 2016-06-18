@@ -1,5 +1,6 @@
 function Nave() {
-    this.casco = new NaveCasco(11, 9);
+    this.casco = new NaveCasco();
+    this.vidrio = new NaveVidrio();
     this.wing = new NaveCompleteWing();
     this.legs = new NaveLegs();
     this.movimiento = new MovimientoNave();
@@ -29,6 +30,7 @@ Nave.prototype.draw = function (modelMatrix) {
 
     this.arriba = vec3.transformMat4([],[0,0,1],matNave);
 
+    this.vidrio.draw(matCasco);
     this.casco.draw(matCasco);
 
     // Dibujamos las Alas
