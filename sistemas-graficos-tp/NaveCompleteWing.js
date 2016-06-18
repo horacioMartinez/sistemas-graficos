@@ -30,7 +30,7 @@ NaveCompleteWing.prototype.draw = function(modelMatrix, vel) {
 	
 	//Unión de Alas
 	var matUnion = mat4.clone(modelMatrix);
-	mat4.scale(matUnion,matUnion,[1.5,1.5,2]);	
+	mat4.scale(matUnion,matUnion,[1.5,1.5,1.25]);	
 	mat4.translate(matUnion,matUnion,[0,-0.4,-0.5]);	
 	this.wingUnion.draw(matUnion);
 }

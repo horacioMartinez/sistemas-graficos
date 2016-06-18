@@ -49,11 +49,18 @@ ClosedExtrusion.prototype.initBuffers = function() {
 			this.normal_buffer.push(perfilNormal[0]);
 			this.normal_buffer.push(perfilNormal[1]);
 			this.normal_buffer.push(perfilNormal[2]);
+			
+			// Tangentes
+			this.tangent_buffer.push(0);
+			this.tangent_buffer.push(0);
+			this.tangent_buffer.push(1);	// Apunta en z
+			
+			var binormal = vec3.normalize([], vec3.cross([], perfilNormal, [0,0,1]));
+			this.binormal_buffer.push(binormal[0], binormal[1], binormal[2]);
 
 			// Coordenadas de textura
 			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
 			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
-			
 		}
 	}
 	

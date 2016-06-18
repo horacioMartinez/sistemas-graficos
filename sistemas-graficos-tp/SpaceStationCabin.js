@@ -10,7 +10,7 @@ function SpaceStationCabin() {
 	// Perfil
 	profileBuffer = curva.getVertices(puntosDeControl, 0.1);
 
-	ClosedExtrusion.call(this, profileBuffer, 7, "textures/metal.jpg");
+	ClosedExtrusion.call(this, profileBuffer, 7, "textures/dorado.jpg");
 }
 
 SpaceStationCabin.prototype = Object.create(ClosedExtrusion.prototype);

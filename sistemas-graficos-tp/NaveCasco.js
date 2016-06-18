@@ -1,5 +1,5 @@
 function NaveCasco(_rows, _cols) {
-  	VertexGrid.call(this, _rows, _cols, 'textures/red.png');
+  	VertexGrid.call(this, _rows, _cols, 'textures/plata.jpg');
 }
 
 NaveCasco.prototype = Object.create(VertexGrid.prototype);

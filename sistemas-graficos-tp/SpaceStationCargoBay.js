@@ -51,7 +51,7 @@ function SpaceStationCargoBay() {
 	var profileBufferPisoExterno = curva.getVertices(puntosPisoExterno, 0.1);
 	
 	// Trayectoria	
-	var puntosControl = [[6,-6,0] , [14,14,0],  [-14,14,0], [-6,-6,0] ];
+	var puntosControl = [[5,-6,0] , [15,14,0],  [-15,14,0], [-5,-6,0] ];
 	var trayectoryBuffer = curva.getVertices(puntosControl,0.01);
 	
 	// Profile Buffer Tapas
