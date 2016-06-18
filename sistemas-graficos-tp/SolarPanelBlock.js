@@ -23,7 +23,9 @@ function SolarPanelSemiBlock() {
     this.edgePipe = new Cilindro(0.02,0.4,15,"textures/pink.jpg");
 
     this.panel1 = new Plane(0.5,2,'textures/panel_solar.jpg');
+    this.panel1_back = new Plane(0.5,2,'textures/panel_solar.jpg');
     this.panel2 = new Plane(0.5,2,'textures/panel_solar.jpg');
+    this.panel2_back = new Plane(0.5,2,'textures/panel_solar.jpg');
 }
 
 SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {
@@ -39,13 +41,24 @@ SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {
     mat4.translate(matPanel1, matPipe, [0, this.pipe.largo/2 - this.panel1.alto/2, 0]);
     mat4.translate(matPanel1, matPanel1, [this.edgePipe.largo/2,0, 0]);
 
+    var matPanel1Back = mat4.clone(matPanel1);
+    mat4.rotateY(matPanel1Back,matPanel1Back,Math.PI);
+    mat4.translate(matPanel1Back,matPanel1Back,[-0.5,-0,-0.02]);
+
     var matPanel2 = mat4.create();
     mat4.translate(matPanel2, matPipe, [0, this.pipe.largo/2 - this.panel2.alto/2, 0]);
     mat4.translate(matPanel2, matPanel2, [-this.panel2.ancho -this.edgePipe.largo/2,0, 0]);
 
+    var matPanel2Back = mat4.clone(matPanel2);
+    mat4.rotateY(matPanel2Back,matPanel2Back,Math.PI);
+    mat4.translate(matPanel2Back,matPanel2Back,[-0.5,-0,-0.02]);
+
     this.panel1.draw(matPanel1);
+    this.panel1_back.draw(matPanel1Back);
+
     this.panel2.draw(matPanel2);
+    this.panel2_back.draw(matPanel2Back);
+
     this.edgePipe.draw(matEdgePipe);
     this.pipe.draw(matPipe);
 };
-
