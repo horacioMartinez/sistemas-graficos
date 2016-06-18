@@ -130,7 +130,7 @@ function degToRad(degrees) {
 function drawScene() {
 
 	var DISTANCIA_ESTACION_MARTE = [0,-120,0];
-	var DISTANCIA_ESTACION_SOL = [50,0,0];
+	var DISTANCIA_ESTACION_SOL = [150,0,0];
 
 	// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda
 	// el área disponible
@@ -159,7 +159,6 @@ function drawScene() {
 	// Matriz de modelado del tierra
 	var model_matrix_tierra = mat4.create();
 	mat4.identity(model_matrix_tierra);
-	//mat4.rotate(model_matrix_tierra, model_matrix_tierra, deimosRotationAngletierra, [0, 1, 0]);
 	mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_MARTE);
 	mat4.scale(model_matrix_tierra, model_matrix_tierra, [100.0, 100.0, 100.0]);
 	tierra.draw(model_matrix_tierra);
@@ -167,9 +166,9 @@ function drawScene() {
 	// Matriz de modelado del sol
 	var model_matrix_sol = mat4.create();
 	mat4.identity(model_matrix_sol);
-	mat4.scale(model_matrix_sol, model_matrix_sol, [5.0, 5.0, 5.0]);
 	mat4.rotate(model_matrix_sol, model_matrix_sol, deimosRotationAngletierra, [0, 1, 0]);
 	mat4.translate(model_matrix_sol, model_matrix_sol, DISTANCIA_ESTACION_SOL);
+	mat4.scale(model_matrix_sol, model_matrix_sol, [5.0, 5.0, 5.0]);
 	sun.draw(model_matrix_sol);
 	
 	// Definimos las matrices de modelado de la estación

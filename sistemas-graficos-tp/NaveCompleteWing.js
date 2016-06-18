@@ -23,9 +23,7 @@ NaveCompleteWing.prototype.draw = function(modelMatrix, vel) {
 	// Ala 2
 	var matWing = mat4.clone(modelMatrix);
 	mat4.translate(matWing,matWing,[0,0.75,6]);	// Separadas a 6 ya que conocemos el ancho de la nave
-
 	mat4.rotateZ(matWing,matWing,rotacion);
-
 	this.wing.draw(matWing);
 	
 	//Unión de Alas

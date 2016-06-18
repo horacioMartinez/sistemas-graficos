@@ -21,7 +21,7 @@ Nave.prototype.draw = function (modelMatrix) {
 
     // Dibujamos el Casco
     var matCasco = mat4.clone(matNave);
-    mat4.translate(matCasco, matCasco, [-12, -3, 0]);
+    mat4.translate(matCasco, matCasco, [-12, -3, -3]);
 
     var matAux = mat4.clone(matNave);
     mat4.translate(matAux, matAux, [12, 3, 0]);
@@ -32,7 +32,10 @@ Nave.prototype.draw = function (modelMatrix) {
     this.casco.draw(matCasco);
 
     // Dibujamos las Alas
-    this.wing.draw(matNave,this.movimiento.getVelocidad());
+    mat4.translate(matNave, matNave, [0, 0, -3]);	// Alineamos la nave al centro
+    var matWing = mat4.clone(matNave);
+    mat4.translate(matWing, matWing, [0, -1.5, 0]);
+    this.wing.draw(matWing,this.movimiento.getVelocidad());
 
     // Dibujamos las Patas
     this.legs.draw(matNave);

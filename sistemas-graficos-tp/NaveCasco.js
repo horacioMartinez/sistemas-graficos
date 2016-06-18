@@ -133,12 +133,12 @@ NaveCasco.prototype.initBuffers = function() {
 	profileBuffer.push(centerLastCover);
 
 
-	var escalado_y = 1 * 1.5;
+	var escalado_y = 1 * 2;
 	var escalado_x = 1;
 	var escalado_z = 1;		
 	
 			
-	for (var i = 0; i < profileBuffer.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR PARA NO
+	for (var i = 0; i < profileBuffer.length; i++) {	// ESCALAMOS ACÁ PARA NO TENER QUE ESCALAR LUEGO => EFICIENCIA!
 		profileBuffer[i].position[0] /= escalado_x;		
 		profileBuffer[i].position[1] /= escalado_y;
 		profileBuffer[i].position[2] /= escalado_z;
@@ -153,7 +153,6 @@ NaveCasco.prototype.initBuffers = function() {
 		
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
-
 	}
 
 }
