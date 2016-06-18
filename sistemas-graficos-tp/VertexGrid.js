@@ -165,6 +165,8 @@ VertexGrid.prototype.draw = function(modelMatrix) {
 	mat3.invert(normalMatrix, normalMatrix);
 	mat3.transpose(normalMatrix, normalMatrix);
 	gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+	
+	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
 	/*gl.activeTexture(gl.TEXTURE1);
 	gl.bindTexture(gl.TEXTURE_2D, this.normalMap);

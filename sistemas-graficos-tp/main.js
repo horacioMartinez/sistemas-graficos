@@ -97,13 +97,13 @@ var lastMouseX = null;
 var lastMouseY = null;
 
 var deimos = null;
-var mars = null;
+var tierra = null;
 var phobos = null;
 
 var deimosRotationMatrix = mat4.create();
 mat4.identity(deimosRotationMatrix);
 
-var deimosRotationAnglemars = 0.0;
+var deimosRotationAngletierra = 0.0;
 var phobosRotationAngledeimos = 0.0;
 
 function mvPushMatrix() {
@@ -129,7 +129,8 @@ function degToRad(degrees) {
 
 function drawScene() {
 
-	var DISTANCIA_ESTACION_MARTE = [5,0,0];
+	var DISTANCIA_ESTACION_MARTE = [0,-120,0];
+	var DISTANCIA_ESTACION_SOL = [50,0,0];
 
 	// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda
 	// el área disponible
@@ -151,55 +152,43 @@ function drawScene() {
 	//vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
 	gl.uniform3fv(shaderProgram.lightingDirectionUniform, lightPosition);
 
-
-	////////////////////////////////////////////////////////
-	//
-	// Dibujamos al mars
-
 	// Configuramos la iluminación para el Sol
 	gl.uniform3f(shaderProgram.ambientColorUniform, 0.3, 0.3, 0.3 );
 	gl.uniform3f(shaderProgram.directionalColorUniform, 0.05, 0.05, 0.05);
 
-	// Matriz de modelado del mars
-	var model_matrix_mars = mat4.create();
-	mat4.identity(model_matrix_mars);
-	mat4.scale(model_matrix_mars, model_matrix_mars, [20.0, 20.0, 20.0]);
-
-
-	mat4.rotate(model_matrix_mars, model_matrix_mars, deimosRotationAnglemars, [0, 1, 0]);
-	mat4.translate(model_matrix_mars, model_matrix_mars, DISTANCIA_ESTACION_MARTE);
-
-	mars.draw(model_matrix_mars);
-	//
-
-
-	////////////////////////////////////////////////////////
-
+	// Matriz de modelado del tierra
+	var model_matrix_tierra = mat4.create();
+	mat4.identity(model_matrix_tierra);
+	//mat4.rotate(model_matrix_tierra, model_matrix_tierra, deimosRotationAngletierra, [0, 1, 0]);
+	mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_MARTE);
+	mat4.scale(model_matrix_tierra, model_matrix_tierra, [100.0, 100.0, 100.0]);
+	tierra.draw(model_matrix_tierra);
+	
+	// Matriz de modelado del sol
+	var model_matrix_sol = mat4.create();
+	mat4.identity(model_matrix_sol);
+	mat4.scale(model_matrix_sol, model_matrix_sol, [5.0, 5.0, 5.0]);
+	mat4.rotate(model_matrix_sol, model_matrix_sol, deimosRotationAngletierra, [0, 1, 0]);
+	mat4.translate(model_matrix_sol, model_matrix_sol, DISTANCIA_ESTACION_SOL);
+	sun.draw(model_matrix_sol);
+	
+	// Definimos las matrices de modelado de la estación
 	var model_space_station_matrix = mat4.create();
 	mat4.identity(model_space_station_matrix);
-	mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAnglemars, [0, 1, 0]);
+	mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAngletierra, [0, 1, 0]);
 
 	var cilindro_matrix = mat4.create();
 	mat4.identity(cilindro_matrix);
-	mat4.rotate(cilindro_matrix, cilindro_matrix, deimosRotationAnglemars, [0, 1, 0]);
+	mat4.rotate(cilindro_matrix, cilindro_matrix, deimosRotationAngletierra, [0, 1, 0]);
 
-	//cilindro = new Cilindro(1,100);
-	//cilindro.draw(cilindro_matrix);
-
+	// Dibujamos la Nave, la Estación y el Universo
 	estacion.draw(model_space_station_matrix);
-
 	nave.draw(mat4.create());
-
 	universo.draw(mat4.create());
 
-	/////////////////////////////////////////////////////
 	// Definimos la ubicación de la camara
-
-	camera.update(CameraMatrix,deimosRotationAnglemars);
+	camera.update(CameraMatrix,deimosRotationAngletierra);
 	setViewProjectionMatrix(CameraMatrix,pMatrix);
-
-	///////////////////////////////////////////////////////
-
 }
 
 
@@ -210,7 +199,7 @@ function tick() {
 	mat4.rotate(newRotationMatrix, newRotationMatrix, 0.025, [0, 1, 0]);
 	mat4.multiply(newRotationMatrix, deimosRotationMatrix, deimosRotationMatrix);
 
-	deimosRotationAnglemars += 0.0045;
+	deimosRotationAngletierra += 0.0045;
 	phobosRotationAngledeimos += 0.0005;
 	drawScene();
 }
@@ -220,17 +209,20 @@ function webGLStart() {
 	var canvas = document.getElementById("tp-canvas");
 	initGL(canvas);
 	initShaders();
+	
+	sun = new TexturedSphere(32,32);
+	sun.initBuffers();
+	sun.initTexture("textures/sun.jpg");
 
-	mars = new TexturedSphere(64,64);
-	mars.initBuffers();
-	mars.initTexture("textures/mars_1k_color.jpg");
+	tierra = new TexturedSphere(64,64);
+	tierra.initBuffers();
+	tierra.initTexture("textures/earth.jpg");
 
 	universo = new Background();
 	estacion = new SpaceStation();
 	nave = new Nave();
 
 	camera = new Camera(nave);
-
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
