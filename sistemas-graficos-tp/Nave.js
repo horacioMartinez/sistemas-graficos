@@ -10,6 +10,8 @@ function Nave() {
 }
 
 Nave.prototype.draw = function (modelMatrix) {
+
+
     this.movimiento.step();
 
     var matNave = mat4.clone(modelMatrix);
@@ -31,7 +33,10 @@ Nave.prototype.draw = function (modelMatrix) {
     this.arriba = vec3.transformMat4([],[0,0,1],matNave);
 
     this.vidrio.draw(matCasco);
+    gl.uniform1i(shaderProgram.useReflectionUniform, true);
+    gl.uniform1f(shaderProgram.reflectFactorUniform, 0.6);
     this.casco.draw(matCasco);
+    gl.uniform1i(shaderProgram.useReflectionUniform, false);
 
     // Dibujamos las Alas
     mat4.translate(matNave, matNave, [0, 0, -3]);	// Alineamos la nave al centro

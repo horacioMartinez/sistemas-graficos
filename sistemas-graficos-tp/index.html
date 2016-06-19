@@ -8,11 +8,9 @@
         body {
             background-color: grey;
         }
-
         canvas {
             background-color: white;
         }
-
         textarea {
             background-color: black;
             foreground-color: white;
@@ -56,7 +54,7 @@
     <script type="text/javascript" src="MangueraAstronauta.js"></script>
     <script type="text/javascript" src="Background.js"></script>
     <script type="text/javascript" src="jquery-1.9.1.js"></script>
-    
+
 
     <!-- Shaders -->
     <script id="shader-vs" type="x-shader/x-vertex">
@@ -75,9 +73,14 @@
     uniform vec3 uDirectionalColor;
 
     uniform bool uUseLighting;
+    uniform bool uUseReflection;
 
     varying vec2 vTextureCoord;
     varying vec3 vLightWeighting;
+
+    varying vec3 vertPos;
+	varying vec3 reflectDir;
+	varying vec3 normalInterp;
 
     void main(void) {
 
@@ -105,7 +108,17 @@
             vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
         }
 		////////////////////////////////////////////
+
+		if (uUseReflection) {
+		        normalInterp = normalize(uNMatrix * aVertexNormal);
+		        vec4 vertPos4 = uModelMatrix * uViewMatrix * vec4(aVertexPosition.x, aVertexPosition.y, aVertexPosition.z, 1.0);
+    			vertPos = vec3(vertPos4) / vertPos4.w;
+    			vec3 view = normalize(vertPos);
+    			reflectDir = reflect(view, normalInterp);
+    			reflectDir = vec3(uViewMatrix * vec4(reflectDir, 0.0));
+    	}
     }
+
 
     </script>
 
@@ -115,12 +128,25 @@
     	varying vec2 vTextureCoord;
     	varying vec3 vLightWeighting;
 
+    	uniform bool uUseReflection;
+    	uniform float uReflectFactor;
+
     	uniform sampler2D uSampler;
+    	uniform sampler2D uReflectionSampler;
+
+    	varying vec3 reflectDir;
 
     	void main(void) {
         	vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         	gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+
+        	if (uUseReflection) {
+                vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
+                vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
+				gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
+    		}
     	}
+
 
     </script>
 </head>
@@ -134,7 +160,8 @@
     <br>
     <b> <font color="white">Camaras: </font></b>orbital 1, bahia de carga: 2, cabina nave: 3, persecucion nave: 4
     <br>
-    <b> <font color="white">Movimiento nave: </font></b>WASD rotar, + - acelerar (debe estar en camaras 3 o 4), R: cerrar patas, T: desplegar patas
+    <b> <font color="white">Movimiento nave: </font></b>WASD rotar, + - acelerar (debe estar en camaras 3 o 4), R:
+    cerrar patas, T: desplegar patas
     <canvas id="tp-canvas" width="1280" height="720">
         Your browser does not support the HTML5 canvas element.
     </canvas>
