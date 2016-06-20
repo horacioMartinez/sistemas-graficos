@@ -18,6 +18,8 @@ function SolarPanelWing() {
 }
 
 SolarPanelWing.prototype.draw = function (modelMatrix) {
+
+
     var matPipe = mat4.clone(modelMatrix);
     var matPipe2 = mat4.clone(modelMatrix);
 
@@ -30,6 +32,9 @@ SolarPanelWing.prototype.draw = function (modelMatrix) {
     mat4.translate(matPipe2, matPipe2, [0, this.mainPipe1.largo / 4, 0]);
     this.mainPipe2.draw(matPipe2);
 
+    gl.uniform1i(shaderProgram.useNormalMap, true);
+    //gl.uniform1i(shaderProgram.useReflectionUniform, true);
+    gl.uniform1f(shaderProgram.reflectFactorUniform, 0.4);
     for (var i = 0; i < this.CANTIDAD_BLOCKS; i++) {
         var matBlock = mat4.clone(modelMatrix);
         if (this.blocks[i].desplazado)
@@ -41,6 +46,9 @@ SolarPanelWing.prototype.draw = function (modelMatrix) {
             mat4.rotateY(matBlock, matBlock, Math.PI / 2);
         this.blocks[i].draw(matBlock);
     }
+    gl.uniform1i(shaderProgram.useReflectionUniform, false);
+    gl.uniform1i(shaderProgram.useNormalMap, false);
+
 };
 
 SolarPanelWing.prototype.initListeners = function () {

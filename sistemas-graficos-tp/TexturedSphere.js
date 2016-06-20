@@ -12,6 +12,8 @@ function TexturedSphere(latitude_bands, longitude_bands){
     this.webgl_normal_buffer = null;
     this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
+    this.binormal_buffer = [];
+    this.tangent_buffer = [];
 
     this.texture = null;
 
@@ -107,6 +109,36 @@ function TexturedSphere(latitude_bands, longitude_bands){
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
+        // Binormales
+        if (this.binormal_buffer.length > 0) {
+            this.webgl_binormal_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.binormal_buffer), gl.STATIC_DRAW);
+            this.webgl_binormal_buffer.itemSize = 3;
+            this.webgl_binormal_buffer.numItems = this.binormal_buffer.length / 3;
+        } else {
+            this.webgl_binormal_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer),gl.STATIC_DRAW);
+            this.webgl_binormal_buffer.itemSize = 3;
+            this.webgl_binormal_buffer.numItems = this.normal_buffer.length / 3;
+        }
+
+        // Tangentes
+        if (this.tangent_buffer.length > 0) {
+            this.webgl_tangent_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer), gl.STATIC_DRAW);
+            this.webgl_tangent_buffer.itemSize = 3;
+            this.webgl_tangent_buffer.numItems = this.tangent_buffer.length / 3;
+        } else {
+            this.webgl_tangent_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
+            this.webgl_tangent_buffer.itemSize = 3;
+            this.webgl_tangent_buffer.numItems = this.normal_buffer.length / 3;
+        }
+
         this.webgl_texture_coord_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
@@ -137,6 +169,12 @@ function TexturedSphere(latitude_bands, longitude_bands){
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);

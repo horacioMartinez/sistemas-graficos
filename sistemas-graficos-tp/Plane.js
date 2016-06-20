@@ -1,9 +1,9 @@
-function Plane(ancho, alto,texturePath,textureStep, oscuro) {
+function Plane(ancho, alto, texturePath, textureStep, oscuro) {
     this.ancho = ancho || 1;
     this.alto = alto || 1;
     this.textureStep = textureStep || 1;
     this.oscuro = oscuro;
-    VertexGrid.call(this, 2, 2,texturePath);
+    VertexGrid.call(this, 2, 2, texturePath);
 }
 
 Plane.prototype = Object.create(VertexGrid.prototype);
@@ -36,6 +36,20 @@ Plane.prototype.initBuffers = function () {
             0, 0, 0
         ];
     }
+    this.tangent_buffer = [
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0
+    ];
+
+    this.binormal_buffer = [
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0
+    ];
+
     this.texture_coord_buffer = [
         0, 0,
         0, this.textureStep,

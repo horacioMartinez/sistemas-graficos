@@ -43,7 +43,7 @@ SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {
 
     var matPanel1Back = mat4.clone(matPanel1);
     mat4.rotateY(matPanel1Back,matPanel1Back,Math.PI);
-    mat4.translate(matPanel1Back,matPanel1Back,[-0.5,-0,-0.02]);
+    mat4.translate(matPanel1Back,matPanel1Back,[-0.5,-0,-0.05]);
 
     var matPanel2 = mat4.create();
     mat4.translate(matPanel2, matPipe, [0, this.pipe.largo/2 - this.panel2.alto/2, 0]);
@@ -51,7 +51,7 @@ SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {
 
     var matPanel2Back = mat4.clone(matPanel2);
     mat4.rotateY(matPanel2Back,matPanel2Back,Math.PI);
-    mat4.translate(matPanel2Back,matPanel2Back,[-0.5,-0,-0.02]);
+    mat4.translate(matPanel2Back,matPanel2Back,[-0.5,-0,-0.05]);
 
     this.panel1.draw(matPanel1);
     this.panel1_back.draw(matPanel1Back);
