@@ -244,3 +244,7 @@ Camera.prototype.moverDerecha = function () {
     vec3.scale(dir, dir, 0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
 };
+
+Camera.prototype.getPosition = function() {
+	return this.eye_point;	
+}

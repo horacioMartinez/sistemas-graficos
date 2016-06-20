@@ -106,10 +106,8 @@
     			reflectDir = vec3(uViewMatrix * vec4(reflectDir, 0.0));
     	}
     }
-
-
-
     </script>
+
 
     <script id="shader-fs" type="x-shader/x-fragment">
         precision mediump float;
@@ -128,6 +126,10 @@
         uniform vec3 uAmbientColor;
         uniform vec3 uLightPosition;
         uniform vec3 uDirectionalColor;
+        uniform vec3 uSpecularColor;
+        uniform float uLightIntensity;
+        
+        uniform vec3 uCameraPos;
 
         varying vec3 reflectDir;
 
@@ -151,23 +153,24 @@
         ////////////////////////////////////////////
         // Calculos de la iluminación
         vec3 lightDir = uLightPosition - vertPos;
+        vec3 lightDirNormalized = normalize(lightDir);
         vec3 lightReflectDir = reflect(-lightDir, normal);
-        vec3 viewDir = normalize(-vertPos);
+        vec3 viewDir = normalize(- vertPos);	//AGREGAMOS POS CAMARA ?
 
-        float directionalLightWeighting = max(dot(lightDir,normal), 0.0);
-        float specular = 0.0;
+		// Direccional
+        float directionalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
+       
+        // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        vec3 r = 2.0 * directionalLightWeighting * normal - lightDirNormalized;
+        float rv = max(dot(r, viewDir), 0.0); 
+		float specularLightWeighting = pow(rv,15.0);
 
-        if(directionalLightWeighting > 0.0) {
-        float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
+        //if(directionalLightWeighting > 0.0) {
+        //float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
         //specular = pow(specAngle, uMaterial.Shininess);
-        }
-        vec3 vLightWeighting = uAmbientColor + uDirectionalColor *directionalLightWeighting; // specular??
-
-        normalize(lightDir);
-
-        //vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
-        //float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
-        //vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        //}
+        vec3 vLightWeighting = uAmbientColor + uDirectionalColor *directionalLightWeighting + uSpecularColor *specularLightWeighting;
+		vLightWeighting = vLightWeighting * uLightIntensity;
         ////////////////////////////////////////////
 
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));

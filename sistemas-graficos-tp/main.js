@@ -88,6 +88,10 @@ function initShaders() {
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
     shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightPosition");
     shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+    shaderProgram.specularColorUniform = gl.getUniformLocation(shaderProgram, "uSpecularColor");
+    shaderProgram.lightIntensity = gl.getUniformLocation(shaderProgram, "uLightIntensity");
+    
+    shaderProgram.cameraPositionUniform = gl.getUniformLocation(shaderProgram, "uCameraPos");
 
     //refleccion luz:
     shaderProgram.useReflectionUniform = gl.getUniformLocation(shaderProgram, "uUseReflection");
@@ -177,11 +181,12 @@ function degToRad(degrees) {
     return degrees * Math.PI / 180;
 }
 
+var DISTANCIA_ESTACION_MARTE = [0, -120, 0];
+var DISTANCIA_ESTACION_SOL = [300, 0, 0];
+    
 function drawScene() {
     
     setReflectionTextureUniform();
-    var DISTANCIA_ESTACION_MARTE = [0, -120, 0];
-    var DISTANCIA_ESTACION_SOL = [150, 0, 0];
 
     // Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda
     // el área disponible
@@ -193,26 +198,28 @@ function drawScene() {
     // Se configura la matriz de proyección
     mat4.perspective(pMatrix, 3.14 / 12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
-    /////////////////////////////////////////////////////
     // Configuración de la luz
     // Se inicializan las variables asociadas con la Iluminación
     var lighting;
     lighting = true;
     gl.uniform1i(shaderProgram.useLightingUniform, lighting);
-    var lightPosition = vec3.fromValues(-100.0, 0.0, -60.0);
+    
+    // Luz direccional del sol
+    var sunPosition = [300.0*Math.cos(deimosRotationAngletierra), 0.0, -300.0*Math.sin(deimosRotationAngletierra)];
     //vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
-    gl.uniform3fv(shaderProgram.lightingDirectionUniform, lightPosition);
+    gl.uniform3fv(shaderProgram.lightingDirectionUniform, sunPosition);
 
-    // Configuramos la iluminación para el Sol
-    gl.uniform3f(shaderProgram.ambientColorUniform, 0.3, 0.3, 0.3);
-    gl.uniform3f(shaderProgram.directionalColorUniform, 0.05, 0.05, 0.05);
+    // Configuramos la iluminación general
+    gl.uniform1f(shaderProgram.lightIntensity, 3.0);					//Intensidad general
+    gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);		//Ambiente
+    gl.uniform3f(shaderProgram.directionalColorUniform, 1.0, 1.0, 1.0);	//Direccional
+    gl.uniform3f(shaderProgram.specularColorUniform, 0.5, 0.5, 0.5);	//Especular
 
     // Matriz de modelado del tierra
     var model_matrix_tierra = mat4.create();
     mat4.identity(model_matrix_tierra);
     mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_MARTE);
     mat4.scale(model_matrix_tierra, model_matrix_tierra, [100.0, 100.0, 100.0]);
-
     tierra.draw(model_matrix_tierra);
 
     // Matriz de modelado del sol
@@ -226,7 +233,7 @@ function drawScene() {
     // Definimos las matrices de modelado de la estación
     var model_space_station_matrix = mat4.create();
     mat4.identity(model_space_station_matrix);
-    mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAngletierra, [0, 1, 0]);
+    //mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAngletierra, [0, 1, 0]);
 
     var cilindro_matrix = mat4.create();
     mat4.identity(cilindro_matrix);
@@ -237,9 +244,13 @@ function drawScene() {
     nave.draw(mat4.create());
     universo.draw(mat4.create());
 
-    // Definimos la ubicación de la camara
+    // Actualizamos la ubicación de la camara
     camera.update(CameraMatrix, deimosRotationAngletierra);
     setViewProjectionMatrix(CameraMatrix, pMatrix);
+    
+    // Obtenemos la ubicación de la camara y se la pasamos al fshader
+    var camera_position = camera.getPosition();
+    gl.uniform3f(shaderProgram.cameraPositionUniform, camera_position[0], camera_position[1], camera_position[2]);
 }
 
 function tick() {
