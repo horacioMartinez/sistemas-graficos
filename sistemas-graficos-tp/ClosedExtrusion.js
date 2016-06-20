@@ -67,7 +67,10 @@ ClosedExtrusion.prototype.initBuffers = function() {
 	// Ultima tapa:
 	centro_z = i - 1;
 	this.agregarTapa(centro_x, centro_y, centro_z);
-	// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR						
+	// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR
+
+	this.tangent_buffer = []; //los borro a estos (estan seteados arriba) porque sino no se ve, quizas no hagan falta
+	this.binormal_buffer = [];
 }
 
 ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
