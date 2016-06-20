@@ -28,6 +28,7 @@ function SolarPanelSemiBlock() {
     this.panel2_back = new Plane(0.5,2,'textures/panel_solar.jpg');
 }
 
+
 SolarPanelSemiBlock.prototype.draw = function (modelMatrix) {
 
     var matPipe = mat4.create();

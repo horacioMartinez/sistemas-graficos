@@ -112,75 +112,73 @@
     </script>
 
     <script id="shader-fs" type="x-shader/x-fragment">
-		precision mediump float;
+        precision mediump float;
 
-    	varying vec2 vTextureCoord;
-    	varying vec3 vLightWeighting;
+        varying vec2 vTextureCoord;
+        varying vec3 vLightWeighting;
 
-    	uniform bool uUseReflection;
-    	uniform bool uUseNormalMap;
-    	uniform float uReflectFactor;
+        uniform bool uUseReflection;
+        uniform bool uUseNormalMap;
+        uniform float uReflectFactor;
 
-    	uniform sampler2D uSampler;
-    	uniform sampler2D uReflectionSampler;
-    	uniform sampler2D uNormalSampler;
+        uniform sampler2D uSampler;
+        uniform sampler2D uReflectionSampler;
+        uniform sampler2D uNormalSampler;
 
-    	uniform vec3 uAmbientColor;
+        uniform vec3 uAmbientColor;
         uniform vec3 uLightPosition;
         uniform vec3 uDirectionalColor;
 
-    	varying vec3 reflectDir;
+        varying vec3 reflectDir;
 
-    	varying vec3 normalInterp;
-		varying vec3 tangentInterp;
-		varying vec3 binormalInterp;
+        varying vec3 normalInterp;
+        varying vec3 tangentInterp;
+        varying vec3 binormalInterp;
 
-		varying vec3 vertPos;
+        varying vec3 vertPos;
 
-    	void main(void) {
-    	    vec3 normal = normalize(normalInterp);
-            vec3 tangent = normalize(tangentInterp);
-    		vec3 binormal = normalize(binormalInterp);
+        void main(void) {
+        vec3 normal = normalize(normalInterp);
+        vec3 tangent = normalize(tangentInterp);
+        vec3 binormal = normalize(binormalInterp);
 
-            if (uUseNormalMap) {
-    			mat3 tbn = mat3(tangent, binormal, normal);
-    			vec3 normalCoordinate = texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).xyz * 2.0 - 1.0;
+        if (uUseNormalMap) {
+            mat3 tbn = mat3(tangent, binormal, normal);
+            vec3 normalCoordinate = texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).xyz * 2.0 - 1.0;
+            normal = normalize(tbn * normalCoordinate);
+        }
 
-    			normal = normalize(tbn * normalCoordinate);
-            }
+        ////////////////////////////////////////////
+        // Calculos de la iluminación
+        vec3 lightDir = uLightPosition - vertPos;
+        vec3 lightReflectDir = reflect(-lightDir, normal);
+        vec3 viewDir = normalize(-vertPos);
 
-    	    ////////////////////////////////////////////
-		    // Calculos de la iluminación
-		    vec3 lightDir =  uLightPosition - vertPos;
-		    vec3 lightReflectDir = reflect(-lightDir, normal);
-    	    vec3 viewDir = normalize(-vertPos);
+        float directionalLightWeighting = max(dot(lightDir,normal), 0.0);
+        float specular = 0.0;
 
-    	    float lambertian = max(dot(lightDir,normal), 0.0);
-    		float specular = 0.0;
+        if(directionalLightWeighting > 0.0) {
+        float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
+        //specular = pow(specAngle, uMaterial.Shininess);
+        }
+        vec3 vLightWeighting = uAmbientColor + uDirectionalColor *directionalLightWeighting; // specular??
 
-    		if(lambertian > 0.0) {
-       			float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
-       			//specular = pow(specAngle, uMaterial.Shininess);
-    		}
-    		vec3 vLightWeighting = uAmbientColor + uDirectionalColor *lambertian; // specular??
+        normalize(lightDir);
 
-		    normalize(lightDir);
+        //vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+        //float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+        //vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        ////////////////////////////////////////////
 
-            //vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
-            //float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
-            //vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
-		    ////////////////////////////////////////////
+        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
 
-        	vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        	gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
-
-        	if (uUseReflection) {
-                vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
-                vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
-				gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
-    		}
-    	}
-
+        if (uUseReflection) {
+        vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
+        vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
+        gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
+        }
+        }
 
 
     </script>

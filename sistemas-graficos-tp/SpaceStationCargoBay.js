@@ -1,4 +1,5 @@
 function SpaceStationCargoBay() {
+	this.initNormalTexture();
 	var profileBuffer = [];
 	var curva = new CurvaBezierCubica();
 	
@@ -85,11 +86,38 @@ SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
 	
 	// Dibujo estructuras externas
 	this.ventanaExterna.draw(modelMatrix);
+
+
+	this.setNormalTexture();// mapa de normales de la extructura externa
+	gl.uniform1i(shaderProgram.useNormalMap, true);
 	this.techoExterno.draw(modelMatrix);
 	this.paredExterna2.draw(modelMatrix);
 	this.pisoExterno.draw(modelMatrix);
-	
+	gl.uniform1i(shaderProgram.useNormalMap, false);
+
 	// Dibujo Tapas	
 	this.firstCargoBayCover.draw(modelMatrix);
 	this.lastCargoBayCover.draw(modelMatrix);
 }
+
+
+SpaceStationCargoBay.prototype.setNormalTexture= function() {
+	setNormalTexture(this.normal_texture);
+};
+
+SpaceStationCargoBay.prototype.initNormalTexture = function(){
+	this.normal_texture = gl.createTexture();
+	this.normal_texture.image = new Image();
+	var self = this;
+	this.normal_texture.image.onload = function () {
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		gl.bindTexture(gl.TEXTURE_2D, self.normal_texture);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.normal_texture.image);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+		gl.generateMipmap(gl.TEXTURE_2D);
+
+		gl.bindTexture(gl.TEXTURE_2D, null);
+	};
+	this.normal_texture.image.src = 'textures/shiphull_normalmap.jpg';
+};
