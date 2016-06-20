@@ -160,7 +160,7 @@
 
     		if(lambertian > 0.0) {
        			float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
-       			specular = pow(specAngle, uMaterial.Shininess);
+       			//specular = pow(specAngle, uMaterial.Shininess);
     		}
     		vec3 vLightWeighting = uAmbientColor + uDirectionalColor *lambertian; // specular??
 
