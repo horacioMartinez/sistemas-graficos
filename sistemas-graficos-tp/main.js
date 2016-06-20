@@ -86,10 +86,14 @@ function initShaders() {
     shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-    shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightPosition");
-    shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
-    shaderProgram.specularColorUniform = gl.getUniformLocation(shaderProgram, "uSpecularColor");
-    shaderProgram.lightIntensity = gl.getUniformLocation(shaderProgram, "uLightIntensity");
+    shaderProgram.lightingPrincipalDirectionUniform = gl.getUniformLocation(shaderProgram, "uPrincipalLightPosition");
+    shaderProgram.directionalPrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalDirectionalColor");
+    shaderProgram.specularPrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalSpecularColor");
+    shaderProgram.lightPrincipalIntensity = gl.getUniformLocation(shaderProgram, "uPrincipalLightIntensity");
+    shaderProgram.lightingSecondaryDirectionUniform = gl.getUniformLocation(shaderProgram, "uSecondaryLightPosition");
+    shaderProgram.directionalSecondaryColorUniform = gl.getUniformLocation(shaderProgram, "uSecondaryDirectionalColor");
+    shaderProgram.specularSecondaryColorUniform = gl.getUniformLocation(shaderProgram, "uSecondarySpecularColor");
+    shaderProgram.lightSecondaryIntensity = gl.getUniformLocation(shaderProgram, "uSecondaryLightIntensity");
     
     shaderProgram.cameraPositionUniform = gl.getUniformLocation(shaderProgram, "uCameraPos");
 
@@ -181,7 +185,7 @@ function degToRad(degrees) {
     return degrees * Math.PI / 180;
 }
 
-var DISTANCIA_ESTACION_MARTE = [0, -120, 0];
+var DISTANCIA_ESTACION_TIERRA = [0, -120, 0];
 var DISTANCIA_ESTACION_SOL = [300, 0, 0];
     
 function drawScene() {
@@ -203,22 +207,28 @@ function drawScene() {
     var lighting;
     lighting = true;
     gl.uniform1i(shaderProgram.useLightingUniform, lighting);
-    
-    // Luz direccional del sol
-    var sunPosition = [300.0*Math.cos(deimosRotationAngletierra), 0.0, -300.0*Math.sin(deimosRotationAngletierra)];
-    //vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
-    gl.uniform3fv(shaderProgram.lightingDirectionUniform, sunPosition);
 
     // Configuramos la iluminación general
-    gl.uniform1f(shaderProgram.lightIntensity, 3.0);					//Intensidad general
-    gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);		//Ambiente
-    gl.uniform3f(shaderProgram.directionalColorUniform, 1.0, 1.0, 1.0);	//Direccional
-    gl.uniform3f(shaderProgram.specularColorUniform, 0.5, 0.5, 0.5);	//Especular
+    // Principal
+    var sunPosition = [300.0*Math.cos(deimosRotationAngletierra), 0.0, -300.0*Math.sin(deimosRotationAngletierra)];
+    //vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
+    gl.uniform3fv(shaderProgram.lightingPrincipalDirectionUniform, sunPosition);
+    gl.uniform1f(shaderProgram.lightPrincipalIntensity, 3.0);						//Intensidad general
+    gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);					//Ambiente
+    gl.uniform3f(shaderProgram.directionalPrincipalColorUniform, 1.0, 1.0, 1.0);	//Direccional
+    gl.uniform3f(shaderProgram.specularPrincipalColorUniform, 0.5, 0.5, 0.5);		//Especular
+    
+    // Secundaria
+    var earthPosition = DISTANCIA_ESTACION_TIERRA;
+    gl.uniform3fv(shaderProgram.lightingSecondaryDirectionUniform, earthPosition);
+    gl.uniform1f(shaderProgram.lightSecondaryIntensity, 0.5);						//Intensidad general
+    gl.uniform3f(shaderProgram.directionalSecondaryColorUniform, 0.0, 0.0, 1.0);	//Direccional
+    gl.uniform3f(shaderProgram.specularSecondaryColorUniform, 0.0, 0.0, 0.0);		//Especular		//POR AHORA SETEADA A 0
 
     // Matriz de modelado del tierra
     var model_matrix_tierra = mat4.create();
     mat4.identity(model_matrix_tierra);
-    mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_MARTE);
+    mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_TIERRA);
     mat4.scale(model_matrix_tierra, model_matrix_tierra, [100.0, 100.0, 100.0]);
     tierra.draw(model_matrix_tierra);
 

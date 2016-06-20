@@ -60,8 +60,10 @@ ClosedExtrusion.prototype.initBuffers = function() {
 			this.binormal_buffer.push(binormal[0], binormal[1], binormal[2]);
 
 			// Coordenadas de textura
-			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
-			this.texture_coord_buffer.push(i / (this.profileBuffer.length - 1));
+			var u = i / (this.stepsClosedExtrusion - 1);
+			var v = j / (this.profileBuffer.length - 1);
+			this.texture_coord_buffer.push(u);
+			this.texture_coord_buffer.push(v);
 		}
 	}
 	
@@ -117,8 +119,10 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			this.normal_buffer.push(0);
 			if (centro_z == 0) {
 				this.normal_buffer.push(-1);
+				this.texture_coord_buffer.push(1);	//Dudas
 			} else {
 				this.normal_buffer.push(1);
+				this.texture_coord_buffer.push(0);	//Dudas
 			}
 			
 			// Tangentes
@@ -126,7 +130,7 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			// Binormales	
 			
 			// Coordenadas
-			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
+			
 			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));	
 	}
 }

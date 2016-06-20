@@ -124,10 +124,18 @@
         uniform sampler2D uNormalSampler;
 
         uniform vec3 uAmbientColor;
-        uniform vec3 uLightPosition;
-        uniform vec3 uDirectionalColor;
-        uniform vec3 uSpecularColor;
-        uniform float uLightIntensity;
+        
+        // Principal Light
+        uniform vec3 uPrincipalLightPosition;
+        uniform vec3 uPrincipalDirectionalColor;
+        uniform vec3 uPrincipalSpecularColor;
+        uniform float uPrincipalLightIntensity;
+        
+        // Secondary Light
+        uniform vec3 uSecondaryLightPosition;
+        uniform vec3 uSecondaryDirectionalColor;
+        uniform vec3 uSecondarySpecularColor;
+        uniform float uSecondaryLightIntensity;
         
         uniform vec3 uCameraPos;
 
@@ -144,6 +152,7 @@
         vec3 tangent = normalize(tangentInterp);
         vec3 binormal = normalize(binormalInterp);
 
+		// Normal Map
         if (uUseNormalMap) {
             mat3 tbn = mat3(tangent, binormal, normal);
             vec3 normalCoordinate = texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).xyz * 2.0 - 1.0;
@@ -152,30 +161,50 @@
 
         ////////////////////////////////////////////
         // Calculos de la iluminación
-        vec3 lightDir = uLightPosition - vertPos;
+        
+        /** Principal Light **/
+        vec3 lightDir = uPrincipalLightPosition - vertPos;
         vec3 lightDirNormalized = normalize(lightDir);
-        vec3 lightReflectDir = reflect(-lightDir, normal);
-        vec3 viewDir = normalize(- vertPos);	//AGREGAMOS POS CAMARA ?
+        vec3 lightReflectDir = reflect(-lightDirNormalized, normal);
+        vec3 viewDir = normalize(-vertPos);	//AGREGAMOS POS CAMARA ?
 
 		// Direccional
-        float directionalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
+        float directionalPrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
        
         // Especular: [(2*(N*L)*N - L) * V] ^ alpha
-        vec3 r = 2.0 * directionalLightWeighting * normal - lightDirNormalized;
+        vec3 r = 2.0 * directionalPrincipalLightWeighting * normal - lightDirNormalized;
         float rv = max(dot(r, viewDir), 0.0); 
-		float specularLightWeighting = pow(rv,15.0);
+		float specularPrincipalLightWeighting = pow(rv,15.0);
+		
+		
+		/** Secondary Light **/
+        lightDir = uSecondaryLightPosition - vertPos;
+        lightDirNormalized = normalize(lightDir);
+        lightReflectDir = reflect(-lightDirNormalized, normal);
+        viewDir = normalize(-vertPos);	
 
-        //if(directionalLightWeighting > 0.0) {
-        //float specAngle = max(dot(lightReflectDir, viewDir), 0.0);
-        //specular = pow(specAngle, uMaterial.Shininess);
-        //}
-        vec3 vLightWeighting = uAmbientColor + uDirectionalColor *directionalLightWeighting + uSpecularColor *specularLightWeighting;
-		vLightWeighting = vLightWeighting * uLightIntensity;
+		// Direccional
+        float directionalSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
+       
+        // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        r = 2.0 * directionalSecondaryLightWeighting * normal - lightDirNormalized;
+        rv = max(dot(r, viewDir), 0.0); 
+		float specularSecondaryLightWeighting = pow(rv,7.0);
+
+
+		/** Total Light **/
+		vec3 vPrincipalLightWeighting = uPrincipalLightIntensity * (uAmbientColor +
+																	uPrincipalDirectionalColor * directionalPrincipalLightWeighting + 
+																	uPrincipalSpecularColor * specularPrincipalLightWeighting);
+        vec3 vSecondaryLightWeighting = uSecondaryLightIntensity * (uSecondaryDirectionalColor*directionalSecondaryLightWeighting + 
+																	uSecondarySpecularColor *specularSecondaryLightWeighting);	
+		vec3 vLightWeighting = vPrincipalLightWeighting + vSecondaryLightWeighting;
+        
         ////////////////////////////////////////////
-
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
 
+		// Reflexion
         if (uUseReflection) {
         vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
         vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
