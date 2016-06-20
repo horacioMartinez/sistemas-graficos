@@ -55,6 +55,7 @@ ClosedExtrusion.prototype.initBuffers = function() {
 			this.tangent_buffer.push(0);
 			this.tangent_buffer.push(1);	// Apunta en z
 			
+			// Binormales			
 			var binormal = vec3.normalize([], vec3.cross([], perfilNormal, [0,0,1]));
 			this.binormal_buffer.push(binormal[0], binormal[1], binormal[2]);
 
@@ -67,7 +68,6 @@ ClosedExtrusion.prototype.initBuffers = function() {
 	// Ultima tapa:
 	centro_z = i - 1;
 	this.agregarTapa(centro_x, centro_y, centro_z);
-	// TODO: FALTA DEFINIR LOS VECTORES DE NORMALES, BINORMALES Y DE COORDENADAS DE COLOR
 
 	this.tangent_buffer = []; //los borro a estos (estan seteados arriba) porque sino no se ve, quizas no hagan falta
 	this.binormal_buffer = [];
@@ -94,15 +94,14 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			this.normal_buffer.push(perfilNormal[1]);
 			this.normal_buffer.push(perfilNormal[2]);
 			
-			// Color
-			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
-			this.color_buffer.push(j * x);
-			this.color_buffer.push(y);		
-			
 			// Coordenadas
 			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
 			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
 			
+			// Tangentes
+
+			// Binormales			
+
 			
 			////////////////////////////////////////////////////////////////////
 			//////////////// Vertice centro de la superficie ///////////////////
@@ -121,11 +120,10 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			} else {
 				this.normal_buffer.push(1);
 			}
+			
+			// Tangentes
 
-			// Color
-			this.color_buffer.push(x * y * z );	// TODO: MODIFICAR COLOR
-			this.color_buffer.push(j * x);
-			this.color_buffer.push(y);
+			// Binormales	
 			
 			// Coordenadas
 			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));
