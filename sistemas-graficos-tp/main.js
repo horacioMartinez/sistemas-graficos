@@ -86,14 +86,15 @@ function initShaders() {
     shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-    shaderProgram.lightingPrincipalDirectionUniform = gl.getUniformLocation(shaderProgram, "uPrincipalLightPosition");
-    shaderProgram.directionalPrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalDirectionalColor");
+    shaderProgram.lightingPrincipalDirectionUniform = gl.getUniformLocation(shaderProgram, "uPrincipalLightDirection");
+    shaderProgram.diffusePrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalDiffuseColor");
     shaderProgram.specularPrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalSpecularColor");
     shaderProgram.lightPrincipalIntensity = gl.getUniformLocation(shaderProgram, "uPrincipalLightIntensity");
-    shaderProgram.lightingSecondaryDirectionUniform = gl.getUniformLocation(shaderProgram, "uSecondaryLightPosition");
-    shaderProgram.directionalSecondaryColorUniform = gl.getUniformLocation(shaderProgram, "uSecondaryDirectionalColor");
+    shaderProgram.lightingSecondaryDirectionUniform = gl.getUniformLocation(shaderProgram, "uSecondaryLightDirection");
+    shaderProgram.diffuseSecondaryColorUniform = gl.getUniformLocation(shaderProgram, "uSecondaryDiffuseColor");
     shaderProgram.specularSecondaryColorUniform = gl.getUniformLocation(shaderProgram, "uSecondarySpecularColor");
     shaderProgram.lightSecondaryIntensity = gl.getUniformLocation(shaderProgram, "uSecondaryLightIntensity");
+    shaderProgram.useDirectionalLights = gl.getUniformLocation(shaderProgram, "uUseDirectionalLights");
     
     shaderProgram.cameraPositionUniform = gl.getUniformLocation(shaderProgram, "uCameraPos");
 
@@ -204,9 +205,10 @@ function drawScene() {
 
     // Configuración de la luz
     // Se inicializan las variables asociadas con la Iluminación
-    var lighting;
-    lighting = true;
+    var lighting = true;
+    var directionalLightsActive = true;
     gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+    gl.uniform1i(shaderProgram.useDirectionalLights, directionalLightsActive);
 
     // Configuramos la iluminación general
     // Principal
@@ -215,14 +217,14 @@ function drawScene() {
     gl.uniform3fv(shaderProgram.lightingPrincipalDirectionUniform, sunPosition);
     gl.uniform1f(shaderProgram.lightPrincipalIntensity, 3.0);						//Intensidad general
     gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);					//Ambiente
-    gl.uniform3f(shaderProgram.directionalPrincipalColorUniform, 1.0, 1.0, 1.0);	//Direccional
+    gl.uniform3f(shaderProgram.diffusePrincipalColorUniform, 1.0, 1.0, 1.0);		//Difusa
     gl.uniform3f(shaderProgram.specularPrincipalColorUniform, 0.5, 0.5, 0.5);		//Especular
     
     // Secundaria
     var earthPosition = DISTANCIA_ESTACION_TIERRA;
-    gl.uniform3fv(shaderProgram.lightingSecondaryDirectionUniform, earthPosition);
+    gl.uniform3fv(shaderProgram.lightingSecondaryDirectionUniform, [0,-1,0]);
     gl.uniform1f(shaderProgram.lightSecondaryIntensity, 0.5);						//Intensidad general
-    gl.uniform3f(shaderProgram.directionalSecondaryColorUniform, 0.0, 0.0, 1.0);	//Direccional
+    gl.uniform3f(shaderProgram.diffuseSecondaryColorUniform, 0.0, 0.0, 1.0);	//Difusa
     gl.uniform3f(shaderProgram.specularSecondaryColorUniform, 0.0, 0.0, 0.0);		//Especular		//POR AHORA SETEADA A 0
 
     // Matriz de modelado del tierra

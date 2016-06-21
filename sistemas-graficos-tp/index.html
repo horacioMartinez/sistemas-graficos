@@ -124,16 +124,17 @@
         uniform sampler2D uNormalSampler;
 
         uniform vec3 uAmbientColor;
+        uniform bool uUseDirectionalLights;
         
         // Principal Light
-        uniform vec3 uPrincipalLightPosition;
-        uniform vec3 uPrincipalDirectionalColor;
+        uniform vec3 uPrincipalLightDirection;
+        uniform vec3 uPrincipalDiffuseColor;
         uniform vec3 uPrincipalSpecularColor;
         uniform float uPrincipalLightIntensity;
         
         // Secondary Light
-        uniform vec3 uSecondaryLightPosition;
-        uniform vec3 uSecondaryDirectionalColor;
+        uniform vec3 uSecondaryLightDirection;
+        uniform vec3 uSecondaryDiffuseColor;
         uniform vec3 uSecondarySpecularColor;
         uniform float uSecondaryLightIntensity;
         
@@ -159,48 +160,50 @@
             normal = normalize(tbn * normalCoordinate);
         }
 
-        ////////////////////////////////////////////
         // Calculos de la iluminación
-        
-        /** Principal Light **/
-        vec3 lightDir = uPrincipalLightPosition - vertPos;
+        /** Principal Light: Direccional **/
+        vec3 lightDir = uPrincipalLightDirection; //- vertPos;
         vec3 lightDirNormalized = normalize(lightDir);
         vec3 lightReflectDir = reflect(-lightDirNormalized, normal);
         vec3 viewDir = normalize(-vertPos);	//AGREGAMOS POS CAMARA ?
-
-		// Direccional
-        float directionalPrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
-       
+		// Difusa: (N*L)
+        float diffusePrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
         // Especular: [(2*(N*L)*N - L) * V] ^ alpha
-        vec3 r = 2.0 * directionalPrincipalLightWeighting * normal - lightDirNormalized;
+        vec3 r = 2.0 * diffusePrincipalLightWeighting * normal - lightDirNormalized;
         float rv = max(dot(r, viewDir), 0.0); 
 		float specularPrincipalLightWeighting = pow(rv,15.0);
-		
-		
-		/** Secondary Light **/
-        lightDir = uSecondaryLightPosition - vertPos;
+				
+		/** Secondary Light: Direccional **/
+        lightDir = uSecondaryLightDirection;// - vertPos;
         lightDirNormalized = normalize(lightDir);
         lightReflectDir = reflect(-lightDirNormalized, normal);
         viewDir = normalize(-vertPos);	
-
-		// Direccional
-        float directionalSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
-       
+		// Difusa: (N*L)
+        float diffuseSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
         // Especular: [(2*(N*L)*N - L) * V] ^ alpha
-        r = 2.0 * directionalSecondaryLightWeighting * normal - lightDirNormalized;
+        r = 2.0 * diffuseSecondaryLightWeighting * normal - lightDirNormalized;
         rv = max(dot(r, viewDir), 0.0); 
 		float specularSecondaryLightWeighting = pow(rv,7.0);
+				
+		/** Tertiary Lights: Puntuals **/
 
 
+
+		if (!uUseDirectionalLights) {
+			diffusePrincipalLightWeighting = 0.0;
+			specularPrincipalLightWeighting = 0.0;
+			diffuseSecondaryLightWeighting = 0.0;
+			specularSecondaryLightWeighting = 0.0;
+		}
+		
 		/** Total Light **/
 		vec3 vPrincipalLightWeighting = uPrincipalLightIntensity * (uAmbientColor +
-																	uPrincipalDirectionalColor * directionalPrincipalLightWeighting + 
+																	uPrincipalDiffuseColor * diffusePrincipalLightWeighting + 
 																	uPrincipalSpecularColor * specularPrincipalLightWeighting);
-        vec3 vSecondaryLightWeighting = uSecondaryLightIntensity * (uSecondaryDirectionalColor*directionalSecondaryLightWeighting + 
+        vec3 vSecondaryLightWeighting = uSecondaryLightIntensity * (uSecondaryDiffuseColor*diffuseSecondaryLightWeighting + 
 																	uSecondarySpecularColor *specularSecondaryLightWeighting);	
 		vec3 vLightWeighting = vPrincipalLightWeighting + vSecondaryLightWeighting;
         
-        ////////////////////////////////////////////
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
 
@@ -211,8 +214,7 @@
         gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
         }
         }
-
-
+        
     </script>
 </head>
 
