@@ -80,10 +80,12 @@ SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
 
 	// Dibujo estructuras internas
 	gl.uniform1i(shaderProgram.useDirectionalLights, false);	// Desactivo luces direccionales
+	gl.uniform1f(shaderProgram.usePunctualLights, true);		// Activo luces puntuales
 	this.paredInterna1.draw(modelMatrix);
 	this.techoInterno.draw(modelMatrix);
 	this.paredInterna2.draw(modelMatrix);
 	this.pisoInterno.draw(modelMatrix);
+	gl.uniform1f(shaderProgram.usePunctualLights, false);		// Desactivo luces puntuales
 	gl.uniform1i(shaderProgram.useDirectionalLights, true);		// Activo luces direccionales
 	
 	// Dibujo estructuras externas

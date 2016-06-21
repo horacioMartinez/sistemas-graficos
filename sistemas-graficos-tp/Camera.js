@@ -43,17 +43,17 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
             break;
 
         case this.TIPOS_DE_CAMARAS.primer_persona:
-
-            var x = 150 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
-            var y = 150 * Math.cos(this.anguloPolar);
-            var z = 150 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
+            var x = 40 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
+            var y = -10 * Math.cos(this.anguloPolar);
+            var z = 195 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
             this.at_point = [x, y, z];
             var pos = vec3.clone(this.eye_point);
             var target = vec3.clone(this.at_point);
 
-            vec3.rotateY(pos, pos, [0, 0, 0], rotacionEstacion);
-            vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
+            //vec3.rotateY(pos, pos, [0, 0, 0], rotacionEstacion);
+            //vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
             mat4.lookAt(cameraMatrix, pos, target, this.up_point);
+            
             break;
 
         case this.TIPOS_DE_CAMARAS.cabina_nave:

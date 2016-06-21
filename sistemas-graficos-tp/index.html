@@ -125,6 +125,7 @@
 
         uniform vec3 uAmbientColor;
         uniform bool uUseDirectionalLights;
+        uniform bool uUsePunctualLights;
         
         // Principal Light
         uniform vec3 uPrincipalLightDirection;
@@ -138,6 +139,17 @@
         uniform vec3 uSecondarySpecularColor;
         uniform float uSecondaryLightIntensity;
         
+        // Puntual Lights
+        uniform float uPunctualLightRadio;
+        uniform float uPunctualLightIntensity;
+        uniform vec3 uPunctualDiffuseColor;
+        uniform vec3 uPunctualSpecularColor;
+        uniform vec3 uPunctual1LightPosition;
+        uniform vec3 uPunctual2LightPosition;
+        uniform vec3 uPunctual3LightPosition;
+        uniform vec3 uPunctual4LightPosition;
+
+		// Camera
         uniform vec3 uCameraPos;
 
         varying vec3 reflectDir;
@@ -162,33 +174,110 @@
 
         // Calculos de la iluminación
         /** Principal Light: Direccional **/
-        vec3 lightDir = uPrincipalLightDirection; //- vertPos;
+        vec3 lightDir = uPrincipalLightDirection;
         vec3 lightDirNormalized = normalize(lightDir);
         vec3 lightReflectDir = reflect(-lightDirNormalized, normal);
         vec3 viewDir = normalize(-vertPos);	//AGREGAMOS POS CAMARA ?
-		// Difusa: (N*L)
-        float diffusePrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
-        // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		float diffusePrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
         vec3 r = 2.0 * diffusePrincipalLightWeighting * normal - lightDirNormalized;
         float rv = max(dot(r, viewDir), 0.0); 
-		float specularPrincipalLightWeighting = pow(rv,15.0);
+		float specularPrincipalLightWeighting = pow(rv,15.0);							 	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
 				
 		/** Secondary Light: Direccional **/
-        lightDir = uSecondaryLightDirection;// - vertPos;
+        lightDir = uSecondaryLightDirection;
         lightDirNormalized = normalize(lightDir);
         lightReflectDir = reflect(-lightDirNormalized, normal);
         viewDir = normalize(-vertPos);	
-		// Difusa: (N*L)
-        float diffuseSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
-        // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        float diffuseSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
         r = 2.0 * diffuseSecondaryLightWeighting * normal - lightDirNormalized;
         rv = max(dot(r, viewDir), 0.0); 
-		float specularSecondaryLightWeighting = pow(rv,7.0);
+		float specularSecondaryLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
 				
 		/** Tertiary Lights: Puntuals **/
+		/** Puntual Light 1 **/
+        lightDir = uPunctual1LightPosition - vertPos;
+        lightDirNormalized = normalize(lightDir);
+        lightReflectDir = reflect(-lightDirNormalized, normal);
+        viewDir = normalize(-vertPos);	
+        float diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;
+        rv = max(dot(r, viewDir), 0.0); 
+		float specularPunctualLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		// Total
+        vec3 vP1LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
+															uPunctualSpecularColor*specularPunctualLightWeighting);
+		// Are Vertex inside Punctual Light Radio ?
+		float dist = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
+		if ( dist > uPunctualLightRadio ) {
+			vP1LightWeighting = 0.0 * uPunctualDiffuseColor;
+		}
+		
+		/** Puntual Light 2 **/
+        lightDir = uPunctual2LightPosition - vertPos;
+        lightDirNormalized = normalize(lightDir);
+        lightReflectDir = reflect(-lightDirNormalized, normal);
+        viewDir = normalize(-vertPos);
+        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        rv = max(dot(r, viewDir), 0.0); 
+		specularPunctualLightWeighting = pow(rv,7.0);
+		// Total
+        vec3 vP2LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
+															uPunctualSpecularColor*specularPunctualLightWeighting);
+		// Are Vertex inside Punctual Light Radio ?
+		dist = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
+		if ( dist > uPunctualLightRadio ) {
+			vP2LightWeighting = 0.0 * uPunctualDiffuseColor;
+		}	
 
+										
+		/** Puntual Light 3 **/
+        lightDir = uPunctual3LightPosition - vertPos;
+        lightDirNormalized = normalize(lightDir);
+        lightReflectDir = reflect(-lightDirNormalized, normal);
+        viewDir = normalize(-vertPos);	
+        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;		// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        rv = max(dot(r, viewDir), 0.0); 
+		specularPunctualLightWeighting = pow(rv,7.0);
+		// Total
+        vec3 vP3LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
+															uPunctualSpecularColor*specularPunctualLightWeighting);	
+		// Are Vertex inside Punctual Light Radio ?
+		dist = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
+		if ( dist > uPunctualLightRadio ) {
+			vP3LightWeighting = 0.0 * uPunctualDiffuseColor;
+		}			
+		vP3LightWeighting = 0.0 * uPunctualDiffuseColor;	// ESTA NO LA USAMOS POR AHORA....
+					
+														
+		/** Puntual Light 4 **/
+        lightDir = uPunctual4LightPosition - vertPos;
+        lightDirNormalized = normalize(lightDir);
+        lightReflectDir = reflect(-lightDirNormalized, normal);
+        viewDir = normalize(-vertPos);
+        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)        
+        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;				
+        rv = max(dot(r, viewDir), 0.0); 
+		specularPunctualLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		// Total
+        vec3 vP4LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
+															uPunctualSpecularColor*specularPunctualLightWeighting);
+		// Are Vertex inside Punctual Light Radio ?
+		dist = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
+		if ( dist > uPunctualLightRadio ) {
+			vP4LightWeighting = 0.0 * uPunctualDiffuseColor;
+		}														
 
-
+		// Use Punctual Lights ?
+		if (!uUsePunctualLights) {
+			vP1LightWeighting = 0.0 * uPunctualDiffuseColor;
+			vP2LightWeighting = 0.0 * uPunctualDiffuseColor;
+			vP3LightWeighting = 0.0 * uPunctualDiffuseColor;
+			vP4LightWeighting = 0.0 * uPunctualDiffuseColor;
+		}
+		
+		// Use Directional Lights ?
 		if (!uUseDirectionalLights) {
 			diffusePrincipalLightWeighting = 0.0;
 			specularPrincipalLightWeighting = 0.0;
@@ -202,7 +291,13 @@
 																	uPrincipalSpecularColor * specularPrincipalLightWeighting);
         vec3 vSecondaryLightWeighting = uSecondaryLightIntensity * (uSecondaryDiffuseColor*diffuseSecondaryLightWeighting + 
 																	uSecondarySpecularColor *specularSecondaryLightWeighting);	
-		vec3 vLightWeighting = vPrincipalLightWeighting + vSecondaryLightWeighting;
+																	
+		vec3 vLightWeighting = vPrincipalLightWeighting + 
+							   vSecondaryLightWeighting +
+							   vP1LightWeighting +
+							   vP2LightWeighting +
+							   vP3LightWeighting +
+							   vP4LightWeighting;
         
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
