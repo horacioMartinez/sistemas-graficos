@@ -89,8 +89,11 @@ SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
 	gl.uniform1i(shaderProgram.useDirectionalLights, true);		// Activo luces direccionales
 	
 	// Dibujo estructuras externas
+	gl.uniform1i(shaderProgram.useAutoIlumination, true);	// Ponemos Autoiluminacion
 	this.ventanaExterna.draw(modelMatrix);
-	this.setNormalTexture();// mapa de normales de la extructura externa
+	gl.uniform1i(shaderProgram.useAutoIlumination, false);	// Scamos Autoiluminacion
+	
+	this.setNormalTexture();								// mapa de normales de la extructura externa
 	gl.uniform1i(shaderProgram.useNormalMap, true);
 	this.techoExterno.draw(modelMatrix);
 	this.paredExterna2.draw(modelMatrix);

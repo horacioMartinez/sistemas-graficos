@@ -87,8 +87,12 @@ function initShaders() {
     
     // Lights
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+    shaderProgram.useAutoIlumination = gl.getUniformLocation(shaderProgram, "uUseAutoIlumination");
     shaderProgram.useDirectionalLights = gl.getUniformLocation(shaderProgram, "uUseDirectionalLights");
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+    shaderProgram.autoIluminationIntensity = gl.getUniformLocation(shaderProgram, "uAutoIluminationIntensity");
+    shaderProgram.autoIluminationColorUniform = gl.getUniformLocation(shaderProgram, "uAutoIluminationColor");
+
     // Principal Light
     shaderProgram.lightingPrincipalDirectionUniform = gl.getUniformLocation(shaderProgram, "uPrincipalLightDirection");
     shaderProgram.diffusePrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalDiffuseColor");
@@ -228,9 +232,14 @@ function drawScene() {
     var lighting = true;
     var directionalLightsActive = true;
     var punctualLightsActive = false;
+    var autoIluminationActive = false;
     gl.uniform1i(shaderProgram.useLightingUniform, lighting);
     gl.uniform1i(shaderProgram.usePunctualLights, punctualLightsActive);
     gl.uniform1i(shaderProgram.useDirectionalLights, directionalLightsActive);
+    gl.uniform1i(shaderProgram.useAutoIlumination, autoIluminationActive);
+    
+    gl.uniform1f(shaderProgram.autoIluminationIntensity, 2);
+    gl.uniform3f(shaderProgram.autoIluminationColorUniform, 1.0, 1.0, 1.0);
 
     // Configuramos la iluminación general
     // Luz Principal

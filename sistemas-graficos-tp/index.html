@@ -126,6 +126,9 @@
         uniform vec3 uAmbientColor;
         uniform bool uUseDirectionalLights;
         uniform bool uUsePunctualLights;
+        uniform bool uUseAutoIlumination;
+        uniform float uAutoIluminationIntensity;
+        uniform vec3 uAutoIluminationColor;
         
         // Principal Light
         uniform vec3 uPrincipalLightDirection;
@@ -229,8 +232,7 @@
 		if ( dist > uPunctualLightRadio ) {
 			vP2LightWeighting = 0.0 * uPunctualDiffuseColor;
 		}	
-
-										
+				
 		/** Puntual Light 3 **/
         lightDir = uPunctual3LightPosition - vertPos;
         lightDirNormalized = normalize(lightDir);
@@ -298,15 +300,20 @@
 							   vP2LightWeighting +
 							   vP3LightWeighting +
 							   vP4LightWeighting;
+							   
+		// Auto Iluminación
+		if (uUseAutoIlumination) {
+			vLightWeighting = uAutoIluminationIntensity * uAutoIluminationColor;
+		}
         
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
 
 		// Reflexion
         if (uUseReflection) {
-        vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
-        vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
-        gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
+			vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
+			vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
+			gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
         }
         }
         

@@ -36,6 +36,11 @@ function NaveTurbin() {
 
 NaveTurbin.prototype.draw = function(modelMatrix) {
 	this.cascoTurbina.draw(modelMatrix);
+	
+	gl.uniform1i(shaderProgram.useAutoIlumination, true);	// Ponemos Autoiluminacion
+	gl.uniform1f(shaderProgram.autoIluminationIntensity, 5);
 	this.plasmaSuperior.draw(modelMatrix);
 	this.plasmaInferior.draw(modelMatrix);
+	gl.uniform1f(shaderProgram.autoIluminationIntensity, 2);
+	gl.uniform1i(shaderProgram.useAutoIlumination, false);	// Scamos Autoiluminacion
 }
