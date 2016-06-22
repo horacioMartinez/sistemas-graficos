@@ -208,10 +208,10 @@ function degToRad(degrees) {
 
 var DISTANCIA_ESTACION_TIERRA = [0, -120, 0];
 var DISTANCIA_ESTACION_SOL = [300, 0, 0];
-var POS_LUZ_PUNTUAL_1 = [6.67, 0.2, -2.6];
-var POS_LUZ_PUNTUAL_2 = [0.97, 0.2, 9.31];
-var POS_LUZ_PUNTUAL_3 = [-3.2, 0.2, 8.3];//[-3.85, 0.2, 8.38];
-var POS_LUZ_PUNTUAL_4 = [-6.83, 0.2, 0.18];
+var POS_LUZ_PUNTUAL_1 = [6.67, 0.5, -2.6];
+var POS_LUZ_PUNTUAL_2 = [0.97, 0.5, 9.31];
+var POS_LUZ_PUNTUAL_3 = [-3.2, 0.5, 8.3];//[-3.85, 0.2, 8.38];
+var POS_LUZ_PUNTUAL_4 = [-6.83, 0.5, 0.18];
 
 function drawScene() {
     
@@ -260,7 +260,7 @@ function drawScene() {
 
 	// Luces puntuales
 	gl.uniform1f(shaderProgram.punctualLightRadio, 20.0);
-	gl.uniform1f(shaderProgram.lightPunctualIntensity, 0.3);							//Intensidad 
+	gl.uniform1f(shaderProgram.lightPunctualIntensity, 0.2);							//Intensidad 
 	gl.uniform3f(shaderProgram.diffusePunctualColorUniform, 1.0, 1.0, 1.0);				//Difusa
     gl.uniform3f(shaderProgram.specularPunctualColorUniform, 1.0, 1.0, 1.0);			//Especular	
     gl.uniform3fv(shaderProgram.lightingPunctual1PositionUniform, POS_LUZ_PUNTUAL_1);	//Punctual 1
