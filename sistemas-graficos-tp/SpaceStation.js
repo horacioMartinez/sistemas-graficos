@@ -4,6 +4,8 @@ function SpaceStation() {
 	this.cabin = new SpaceStationCabin();
 	this.pipe = new SpaceStationCabin();
 	this.mangueraAstronauta = new MangueraAstronauta();
+	
+	this.human_cabin =new SpaceStationHumanCabin();
 }
 
 SpaceStation.prototype.draw = function(modelMatrix) {
@@ -37,4 +39,19 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 	mat4.translate(matManguera,matManguera, [10.1,-1.7,3]);
 	mat4.scale(matManguera,matManguera,[0.3,0.3,0.3]);
 	this.mangueraAstronauta.draw(matManguera);
+	
+	// Dibujamos las Cabinas
+	var cant_cilindros = 3;
+	for (var i = 1; i < cant_cilindros + 1; ++i) {
+		var angle = Math.PI + (i * Math.PI * 2 / (cant_cilindros + 1));
+
+		var matCilinder = mat4.clone(modelMatrix);
+		mat4.rotate(matCilinder,matCilinder,angle,[0,1,0]);
+		
+		if (i == 2) {
+			mat4.translate(matCilinder,matCilinder,[0,0,2]);
+		}
+		mat4.translate(matCilinder,matCilinder,[0,0,8.25]);
+		this.human_cabin.draw(matCilinder);
+	}
 }

@@ -168,14 +168,6 @@ VertexGrid.prototype.draw = function(modelMatrix) {
 	
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
-	/*gl.activeTexture(gl.TEXTURE1);
-	gl.bindTexture(gl.TEXTURE_2D, this.normalMap);
-	gl.uniform1i(shaderProgram.normalSamplerUniform, 1);
-
-	gl.activeTexture(gl.TEXTURE2);
-	gl.bindTexture(gl.TEXTURE_2D, this.reflectionMap);
-	gl.uniform1i(shaderProgram.reflectionSamplerUniform, 2);*/
-
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 	//gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
 	gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
