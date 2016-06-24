@@ -48,6 +48,9 @@ MangueraAstronauta.prototype.draw = function (modelMatrix) {
     mat4.translate(matAstronauta,matAstronauta,[-this.astronauta.ancho/2,-this.astronauta.alto/2,0]);
     mat4.translate(matAstronauta,matAstronauta,this.PUNTO_FINAL);
     //mat4.rotateY(matAstronauta,matAstronauta,Math.PI/2);
-    this.mangera.draw(modelMatrix);
+
+    var matManguera = mat4.clone(modelMatrix);
+    mat4.translate(matManguera,matManguera,[2,0,0]);
+    this.mangera.draw(matManguera);
     this.astronauta.draw(matAstronauta);
 };

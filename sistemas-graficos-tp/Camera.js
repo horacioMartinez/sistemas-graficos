@@ -43,9 +43,9 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
             break;
 
         case this.TIPOS_DE_CAMARAS.primer_persona:
-            var x = 40 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
-            var y = -10 * Math.cos(this.anguloPolar);
-            var z = 195 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
+            var x = 150 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
+            var y = 150 * Math.cos(this.anguloPolar);
+            var z = 150 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
             this.at_point = [x, y, z];
             var pos = vec3.clone(this.eye_point);
             var target = vec3.clone(this.at_point);
@@ -187,7 +187,7 @@ Camera.prototype.seleccionarOrbital = function () {
 };
 
 Camera.prototype.seleccionarPrimerPersona = function () {
-    this.eye_point = [4, 0, 3];
+    this.eye_point = [7, 0, 3];
     this.anguloPolar= Math.PI/2;
     this.anguloAzimuth = Math.PI * 1.5;
     //this.anguloAzimuth = Math.PI/8;
