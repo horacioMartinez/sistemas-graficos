@@ -62,12 +62,12 @@ function SpaceStationCargoBay() {
 	
 	// Estructuras Internas
 	this.paredInterna1 = new SupBarrido(trayectoryBuffer, profileBufferParedInterna1, "textures/paredInterna1.png", 4);
-	this.techoInterno = new SupBarrido(trayectoryBuffer, profileBufferTechoInterno, "textures/techo2.jpg", 5);	// 5 luces en el techo	
+	this.techoInterno = new SupBarrido(trayectoryBuffer, profileBufferTechoInterno, "textures/techo2.jpg", 10);	// 10 luces en el techo	
 	this.paredInterna2 = new SupBarrido(trayectoryBuffer, profileBufferParedInterna2, "textures/paredInterna1.png", 4);
 	this.pisoInterno = new SupBarrido(trayectoryBuffer, profileBufferPisoInterno, "textures/piso.jpg", 5);
 
 	// Estructuras Externas
-	this.ventanaExterna = new SupBarrido(trayectoryBuffer, profileBufferVentanaExterna, "textures/ventanal.jpg", 4); // 4 ventanas
+	this.ventanaExterna = new SupBarrido(trayectoryBuffer, profileBufferVentanaExterna, "textures/ventanal.jpg", 3); // 3 ventanas
 	this.techoExterno = new SupBarrido(trayectoryBuffer, profileBufferTechoExterno, "textures/shiphull.png", 5);	
 	this.paredExterna2 = new SupBarrido(trayectoryBuffer, profileBufferParedExterna2, "textures/shiphull.png", 4);
 	this.pisoExterno = new SupBarrido(trayectoryBuffer, profileBufferPisoExterno, "textures/shiphull.png", 5);
@@ -87,7 +87,9 @@ SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
 	this.setLightTexture();
 	gl.uniform1f(shaderProgram.autoIluminationIntensity, 10);
 	gl.uniform1i(shaderProgram.useLightMap, true);				// Activo mapa de iluminación
+	
 		this.techoInterno.draw(modelMatrix);
+		
 	gl.uniform1i(shaderProgram.useLightMap, false);				// Desactivo Mapa de iluminación
 	gl.uniform1f(shaderProgram.autoIluminationIntensity, 2);
 	gl.uniform1f(shaderProgram.usePunctualLights, false);		// Desactivo luces puntuales

@@ -13,6 +13,8 @@ SupBarrido.prototype.initBuffers = function() {
 	this.position_buffer = [];
 	this.color_buffer = [];
 	
+	var switch_u = 0.0;
+	
 	var textureLength = parseInt(this.trayectoryBuffer.length / this.textureCount);
 				
 	for (var i = 0; i < this.trayectoryBuffer.length; i ++) {
@@ -21,6 +23,10 @@ SupBarrido.prototype.initBuffers = function() {
 		var translationBinormal = translationVertex.binormal;
 		var translationNormal = translationVertex.normal;
 		var translationTangent = translationVertex.tangent;
+		
+		if ( (1.0 - (i % textureLength) / textureLength) == 1.0 ) {		//TODO: CHECKEAR, INVERTIMOS LA TEXTURA
+			switch_u = 1.0 - switch_u;
+		}
 
 		for (var j = 0; j < this.profileBuffer.length; j ++) {
 			var perfilPosition = this.profileBuffer[j].position;
@@ -49,10 +55,19 @@ SupBarrido.prototype.initBuffers = function() {
 			this.binormal_buffer.push(binormal[0], binormal[1], binormal[2]);
 			
 			// Coordenadas
-			var u = 1.0 - (i % textureLength) / textureLength;
-			var v = 1.0 - (j / this.profileBuffer.length);
+			var u = 1.0 - (i % textureLength) / textureLength;		
+			var v = 1.0 - (j / (this.profileBuffer.length - 1));
+
+			if (switch_u == 1.0) {
+				u = 1.0 - (i % textureLength) / textureLength;		
+			} else {
+				u = (i % textureLength) / textureLength;		
+			}
+			
 			this.texture_coord_buffer.push(u);
 			this.texture_coord_buffer.push(v);
 		}
+		
+
 	}
 }

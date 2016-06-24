@@ -270,7 +270,7 @@ function drawScene() {
     gl.uniform3f(shaderProgram.specularSecondaryColorUniform, 0.0, 0.0, 1.0);			//Especular		
 
 	// Luces puntuales
-	gl.uniform1f(shaderProgram.punctualLightRadio, 200.0);
+	gl.uniform1f(shaderProgram.punctualLightRadio, 20.0);
 	gl.uniform1f(shaderProgram.lightPunctualIntensity, 0.3);							//Intensidad 
 	gl.uniform3f(shaderProgram.diffusePunctualColorUniform, 0.8, 1.0, 0.8);				//Difusa (Verdosa)
     gl.uniform3f(shaderProgram.specularPunctualColorUniform, 0.8, 1.0, 0.8);			//Especular (Verdosa)	
