@@ -149,7 +149,9 @@ NaveCasco.prototype.initBuffers = function() {
 		
 		this.normal_buffer.push(vertex.normal[0], vertex.normal[1], vertex.normal[2]);
 		
-		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
+		var u = i / (profileBuffer.length - 1);
+		var v = 0.0;
+		this.texture_coord_buffer.push(u);
 		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
 	}
 }

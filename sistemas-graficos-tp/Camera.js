@@ -120,6 +120,9 @@ Camera.prototype.initListeners = function () {
         if (tecla == 68) { // D
             self.moverDerecha();
         }
+        if (tecla == 69) { // E
+			self.rotarDerecha();
+		}
         if (tecla === 49) { //1
             self.seleccionarOrbital();
         }
@@ -212,6 +215,7 @@ Camera.prototype.moverAdelante = function () {
     var dir = [];
     vec3.normalize(dir, this.at_point);
     vec3.scale(dir, dir, 0.1);
+    dir[1] = 0.0;
     vec3.add(this.eye_point, this.eye_point, dir);
 };
 
@@ -242,6 +246,11 @@ Camera.prototype.moverDerecha = function () {
     vec3.cross(dir,dir,this.up_point);
     vec3.scale(dir, dir, 0.1);
     vec3.add(this.eye_point, this.eye_point, dir);
+};
+
+Camera.prototype.rotarDerecha = function () {
+    if (this.camara_seleccionada != this.TIPOS_DE_CAMARAS.primer_persona)
+        return;
 };
 
 Camera.prototype.getPosition = function() {

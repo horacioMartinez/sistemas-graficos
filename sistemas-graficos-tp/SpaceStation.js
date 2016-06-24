@@ -41,6 +41,8 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 	this.mangueraAstronauta.draw(matManguera);
 	
 	// Dibujamos las Cabinas
+	gl.uniform1f(shaderProgram.secondaryLightIntensity, 10);
+
 	var cant_cilindros = 3;
 	for (var i = 1; i < cant_cilindros + 1; ++i) {
 		var angle = Math.PI + (i * Math.PI * 2 / (cant_cilindros + 1));
@@ -54,4 +56,7 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 		mat4.translate(matCilinder,matCilinder,[0,0,8.25]);
 		this.human_cabin.draw(matCilinder);
 	}
+	gl.uniform1f(shaderProgram.secondaryLightIntensity, 0.5);
+
+
 }
