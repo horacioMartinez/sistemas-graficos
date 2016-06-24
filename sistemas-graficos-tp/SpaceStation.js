@@ -13,7 +13,7 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 	mat4.translate(matCargoBay,matCargoBay,[0,0.5,0]);
 	mat4.rotateX(matCargoBay,matCargoBay,Math.PI/2);
 	this.cargo_bay.draw(matCargoBay);
-
+	
 	// Dibujamos la superficie de revolución del medio
 	var matCenter = mat4.clone(modelMatrix);
 	mat4.translate(matCenter,matCenter,[0,0.75,1.25]);

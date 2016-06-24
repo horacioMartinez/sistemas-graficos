@@ -85,6 +85,10 @@ function initShaders() {
     shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
     shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
     
+    shaderProgram.samplerLightMapUniform = gl.getUniformLocation(shaderProgram, "uLightSampler");
+    shaderProgram.useLightMap = gl.getUniformLocation(shaderProgram, "uUseLightMap");
+
+    
     // Lights
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.useAutoIlumination = gl.getUniformLocation(shaderProgram, "uUseAutoIlumination");
@@ -197,6 +201,12 @@ function setNormalTexture(texture) {
     gl.uniform1i(shaderProgram.samplerNormal, 2);
 }
 
+function setLightTexture(texture) {
+	gl.activeTexture(gl.TEXTURE3);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.uniform1i(shaderProgram.samplerLightMapUniform, 3);
+}
+
 function setViewProjectionMatrix(CameraMatrix, pMatrix) {
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
     gl.uniformMatrix4fv(shaderProgram.ViewMatrixUniform, false, CameraMatrix);
@@ -208,9 +218,10 @@ function degToRad(degrees) {
 
 var DISTANCIA_ESTACION_TIERRA = [0, -120, 0];
 var DISTANCIA_ESTACION_SOL = [300, 0, 0];
-var POS_LUZ_PUNTUAL_1 = [6.67, 0.5, -2.6];
+ 
+var POS_LUZ_PUNTUAL_1 = [6.8,0.5,0.0];
 var POS_LUZ_PUNTUAL_2 = [0.97, 0.5, 9.31];
-var POS_LUZ_PUNTUAL_3 = [-3.2, 0.5, 8.3];//[-3.85, 0.2, 8.38];
+var POS_LUZ_PUNTUAL_3 = [-3.85, 0.2, 8.38];
 var POS_LUZ_PUNTUAL_4 = [-6.83, 0.5, 0.18];
 
 function drawScene() {
@@ -259,10 +270,10 @@ function drawScene() {
     gl.uniform3f(shaderProgram.specularSecondaryColorUniform, 0.0, 0.0, 1.0);			//Especular		
 
 	// Luces puntuales
-	gl.uniform1f(shaderProgram.punctualLightRadio, 20.0);
-	gl.uniform1f(shaderProgram.lightPunctualIntensity, 0.2);							//Intensidad 
-	gl.uniform3f(shaderProgram.diffusePunctualColorUniform, 1.0, 1.0, 1.0);				//Difusa
-    gl.uniform3f(shaderProgram.specularPunctualColorUniform, 1.0, 1.0, 1.0);			//Especular	
+	gl.uniform1f(shaderProgram.punctualLightRadio, 200.0);
+	gl.uniform1f(shaderProgram.lightPunctualIntensity, 0.3);							//Intensidad 
+	gl.uniform3f(shaderProgram.diffusePunctualColorUniform, 0.8, 1.0, 0.8);				//Difusa (Verdosa)
+    gl.uniform3f(shaderProgram.specularPunctualColorUniform, 0.8, 1.0, 0.8);			//Especular (Verdosa)	
     gl.uniform3fv(shaderProgram.lightingPunctual1PositionUniform, POS_LUZ_PUNTUAL_1);	//Punctual 1
     gl.uniform3fv(shaderProgram.lightingPunctual2PositionUniform, POS_LUZ_PUNTUAL_2);	//Punctual 2
     gl.uniform3fv(shaderProgram.lightingPunctual3PositionUniform, POS_LUZ_PUNTUAL_3);	//Punctual 3
@@ -303,7 +314,7 @@ function drawScene() {
     
     // Obtenemos la ubicación de la camara y se la pasamos al fshader
     var camera_position = camera.getPosition();
-    console.log(camera_position);
+    //console.log(camera_position);
     gl.uniform3f(shaderProgram.cameraPositionUniform, camera_position[0], camera_position[1], camera_position[2]);
 }
 
