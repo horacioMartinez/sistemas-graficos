@@ -92,9 +92,19 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			this.position_buffer.push(z);
 			
 			// Normales
-			this.normal_buffer.push(perfilNormal[0]);
+			/*this.normal_buffer.push(perfilNormal[0]);
 			this.normal_buffer.push(perfilNormal[1]);
-			this.normal_buffer.push(perfilNormal[2]);
+			this.normal_buffer.push(perfilNormal[2]);*/
+			
+			if (centro_z == 0) {
+				this.normal_buffer.push(0);		//TODO: CHECKEAR
+				this.normal_buffer.push(0);
+				this.normal_buffer.push(-1);
+			} else {
+				this.normal_buffer.push(0);
+				this.normal_buffer.push(0);
+				this.normal_buffer.push(1);	
+			}
 			
 			// Coordenadas
 			this.texture_coord_buffer.push(j / (this.profileBuffer.length - 1));

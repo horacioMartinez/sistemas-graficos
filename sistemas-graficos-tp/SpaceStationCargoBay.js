@@ -87,9 +87,7 @@ SpaceStationCargoBay.prototype.draw = function (modelMatrix) {
 	this.setLightTexture();
 	gl.uniform1f(shaderProgram.autoIluminationIntensity, 10);
 	gl.uniform1i(shaderProgram.useLightMap, true);				// Activo mapa de iluminación
-	
 		this.techoInterno.draw(modelMatrix);
-		
 	gl.uniform1i(shaderProgram.useLightMap, false);				// Desactivo Mapa de iluminación
 	gl.uniform1f(shaderProgram.autoIluminationIntensity, 2);
 	gl.uniform1f(shaderProgram.usePunctualLights, false);		// Desactivo luces puntuales
