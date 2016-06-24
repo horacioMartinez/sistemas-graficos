@@ -58,8 +58,7 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
 
         case this.TIPOS_DE_CAMARAS.cabina_nave:
             var target = vec3.add([],this.nave.getPosicion(),vec3.scale([],this.nave.getDireccion(),50));
-            var pos = vec3.add([],this.nave.getPosicion(),vec3.scale([],this.nave.getDireccion(),1));
-
+            var pos = vec3.add([],this.nave.getPosicion(),vec3.scale([],this.nave.getDireccion(),3));
             mat4.lookAt(cameraMatrix, pos, target, this.up_point);
             break;
 
