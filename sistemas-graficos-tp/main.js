@@ -84,19 +84,19 @@ function initShaders() {
     shaderProgram.ModelMatrixUniform = gl.getUniformLocation(shaderProgram, "uModelMatrix");
     shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
     shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-    
-    shaderProgram.samplerLightMapUniform = gl.getUniformLocation(shaderProgram, "uLightSampler");
-    shaderProgram.useLightMap = gl.getUniformLocation(shaderProgram, "uUseLightMap");
 
+    // Color without Texture
+    shaderProgram.useTextureUniform = gl.getUniformLocation(shaderProgram, "uUseTexture");
+    shaderProgram.colorWOTextureUniform = gl.getUniformLocation(shaderProgram, "uColorWOTexture");
     
     // Lights
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.useAutoIlumination = gl.getUniformLocation(shaderProgram, "uUseAutoIlumination");
     shaderProgram.useDirectionalLights = gl.getUniformLocation(shaderProgram, "uUseDirectionalLights");
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+    shaderProgram.ambientIluminationIntensity = gl.getUniformLocation(shaderProgram, "uAmbientalLightIntensity");
     shaderProgram.autoIluminationIntensity = gl.getUniformLocation(shaderProgram, "uAutoIluminationIntensity");
     shaderProgram.autoIluminationColorUniform = gl.getUniformLocation(shaderProgram, "uAutoIluminationColor");
-
     // Principal Light
     shaderProgram.lightingPrincipalDirectionUniform = gl.getUniformLocation(shaderProgram, "uPrincipalLightDirection");
     shaderProgram.diffusePrincipalColorUniform = gl.getUniformLocation(shaderProgram, "uPrincipalDiffuseColor");
@@ -122,16 +122,18 @@ function initShaders() {
     // Camera
     shaderProgram.cameraPositionUniform = gl.getUniformLocation(shaderProgram, "uCameraPos");
 
-    //refleccion luz:
+    // Reflexion
     shaderProgram.useReflectionUniform = gl.getUniformLocation(shaderProgram, "uUseReflection");
     shaderProgram.reflectFactorUniform = gl.getUniformLocation(shaderProgram, "uReflectFactor");
-
     shaderProgram.reflectionSample = gl.getUniformLocation(shaderProgram, "uReflectionSampler");
 
-    // mapa normales:
+    // Mapa de Normales
     shaderProgram.useNormalMap = gl.getUniformLocation(shaderProgram, "uUseNormalMap");
     shaderProgram.samplerNormal = gl.getUniformLocation(shaderProgram, "uNormalSampler");
 
+    // Mapa de Iluminación
+    shaderProgram.samplerLightMapUniform = gl.getUniformLocation(shaderProgram, "uLightSampler");
+    shaderProgram.useLightMap = gl.getUniformLocation(shaderProgram, "uUseLightMap");
 }
 
 var CameraMatrix = mat4.create();
@@ -217,7 +219,7 @@ function degToRad(degrees) {
 }
 
 var DISTANCIA_ESTACION_TIERRA = [0, -120, 0];
-var DISTANCIA_ESTACION_SOL = [300, 0, 0];
+var DISTANCIA_ESTACION_SOL = [500, 0, 0];
  
 var POS_LUZ_PUNTUAL_1 = [6.8,0.5,0.0];
 var POS_LUZ_PUNTUAL_2 = [0.97, 0.5, 9.31];
@@ -238,27 +240,36 @@ function drawScene() {
     // Se configura la matriz de proyección
     mat4.perspective(pMatrix, 3.14 / 12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
+    // Obtenemos la ubicación de la camara y se la pasamos al shader
+    var camera_position = camera.getPosition();
+    gl.uniform3f(shaderProgram.cameraPositionUniform, camera_position[0], camera_position[1], camera_position[2]);
+
     /** Configuración de la luz **/
     // Se inicializan las variables asociadas con la Iluminación
     var lighting = true;
     var directionalLightsActive = true;
     var punctualLightsActive = false;
     var autoIluminationActive = false;
+    var useTexture = true;
     gl.uniform1i(shaderProgram.useLightingUniform, lighting);
     gl.uniform1i(shaderProgram.usePunctualLights, punctualLightsActive);
     gl.uniform1i(shaderProgram.useDirectionalLights, directionalLightsActive);
     gl.uniform1i(shaderProgram.useAutoIlumination, autoIluminationActive);
+    gl.uniform1i(shaderProgram.useTextureUniform, useTexture);
     
-    gl.uniform1f(shaderProgram.autoIluminationIntensity, 2);
+    // Configuramos la iluminación general
+    // Auto iluminación
+    gl.uniform1f(shaderProgram.autoIluminationIntensity, 2.0);
     gl.uniform3f(shaderProgram.autoIluminationColorUniform, 1.0, 1.0, 1.0);
 
-    // Configuramos la iluminación general
+    // Luz ambiental
+    gl.uniform1f(shaderProgram.ambientIluminationIntensity, 2.0);
+    gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);                     //Ambiente
+
     // Luz Principal
-    var sunPosition = [300.0*Math.cos(deimosRotationAngletierra), 0.0, -300.0*Math.sin(deimosRotationAngletierra)];
-    //vec3.transformMat4(lightPosition, lightPosition, CameraMatrix);
+    var sunPosition = [500.0*Math.cos(deimosRotationAngletierra), 0.0, -500.0*Math.sin(deimosRotationAngletierra)];
     gl.uniform3fv(shaderProgram.lightingPrincipalDirectionUniform, sunPosition);
     gl.uniform1f(shaderProgram.lightPrincipalIntensity, 2.0);							//Intensidad 
-    gl.uniform3f(shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);						//Ambiente
     gl.uniform3f(shaderProgram.diffusePrincipalColorUniform, 1.0, 1.0, 1.0);			//Difusa
     gl.uniform3f(shaderProgram.specularPrincipalColorUniform, 0.1, 0.1, 0.1);			//Especular
     
@@ -279,29 +290,28 @@ function drawScene() {
     gl.uniform3fv(shaderProgram.lightingPunctual3PositionUniform, POS_LUZ_PUNTUAL_3);	//Punctual 3
     gl.uniform3fv(shaderProgram.lightingPunctual4PositionUniform, POS_LUZ_PUNTUAL_4);	//Punctual 4
 
-    // Matriz de modelado del tierra
+    // Dibujamos la tierra
     var model_matrix_tierra = mat4.create();
     mat4.identity(model_matrix_tierra);
     mat4.translate(model_matrix_tierra, model_matrix_tierra, DISTANCIA_ESTACION_TIERRA);
     mat4.scale(model_matrix_tierra, model_matrix_tierra, [100.0, 100.0, 100.0]);
     tierra.draw(model_matrix_tierra);
 
-    // Matriz de modelado del sol
+    // Dibujamos el sol
     var model_matrix_sol = mat4.create();
     mat4.identity(model_matrix_sol);
     mat4.rotate(model_matrix_sol, model_matrix_sol, deimosRotationAngletierra, [0, 1, 0]);
     mat4.translate(model_matrix_sol, model_matrix_sol, DISTANCIA_ESTACION_SOL);
-    mat4.scale(model_matrix_sol, model_matrix_sol, [5.0, 5.0, 5.0]);
+    mat4.scale(model_matrix_sol, model_matrix_sol, [2.0, 2.0, 2.0]);
+
+    gl.uniform1i(shaderProgram.useAutoIlumination, true);
     sun.draw(model_matrix_sol);
+    gl.uniform1i(shaderProgram.useAutoIlumination, false);
 
     // Definimos las matrices de modelado de la estación
     var model_space_station_matrix = mat4.create();
     mat4.identity(model_space_station_matrix);
     //mat4.rotate(model_space_station_matrix, model_space_station_matrix, deimosRotationAngletierra, [0, 1, 0]);
-
-    var cilindro_matrix = mat4.create();
-    mat4.identity(cilindro_matrix);
-    mat4.rotate(cilindro_matrix, cilindro_matrix, deimosRotationAngletierra, [0, 1, 0]);
 
     // Dibujamos la Nave, la Estación y el Universo
     estacion.draw(model_space_station_matrix);
@@ -311,11 +321,6 @@ function drawScene() {
     // Actualizamos la ubicación de la camara
     camera.update(CameraMatrix, deimosRotationAngletierra);
     setViewProjectionMatrix(CameraMatrix, pMatrix);
-    
-    // Obtenemos la ubicación de la camara y se la pasamos al fshader
-    var camera_position = camera.getPosition();
-    //console.log(camera_position);
-    gl.uniform3f(shaderProgram.cameraPositionUniform, camera_position[0], camera_position[1], camera_position[2]);
 }
 
 function tick() {

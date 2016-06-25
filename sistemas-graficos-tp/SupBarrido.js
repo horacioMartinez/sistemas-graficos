@@ -24,7 +24,7 @@ SupBarrido.prototype.initBuffers = function() {
 		var translationNormal = translationVertex.normal;
 		var translationTangent = translationVertex.tangent;
 		
-		if ( (1.0 - (i % textureLength) / textureLength) == 1.0 ) {		//TODO: CHECKEAR, INVERTIMOS LA TEXTURA
+		if ( (1.0 - (i % textureLength) / textureLength) == 1.0 ) {
 			switch_u = 1.0 - switch_u;
 		}
 

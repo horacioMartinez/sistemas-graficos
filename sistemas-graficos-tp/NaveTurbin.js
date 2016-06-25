@@ -28,7 +28,6 @@ function NaveTurbin() {
 	} 	
 	var profileBufferPlasmaSuperior = curva.getVertices(puntosPlasmaSuperior,0.1);
 	var profileBufferPlasmaInferior = curva.getVertices(puntosPlasmaInferior,0.1);
-		console.log(profileBufferPlasmaSuperior);
 
   	this.plasmaSuperior = new SupRevolucion(profileBufferPlasmaSuperior, 15, 'textures/shiphull_normalmap.jpg');
   	this.plasmaInferior = new SupRevolucion(profileBufferPlasmaInferior, 15, 'textures/shiphull_normalmap.jpg');								 

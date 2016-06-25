@@ -10,8 +10,6 @@ function Nave() {
 }
 
 Nave.prototype.draw = function (modelMatrix) {
-
-
     this.movimiento.step();
 
     var matNave = mat4.clone(modelMatrix);
@@ -66,13 +64,6 @@ Nave.prototype.getDireccionArriba = function(){
 Nave.prototype.getDirVelocidad = function(){
   return vec3.normalize([],this.movimiento.getVelocidad());
 };
-
-
-
-
-
-
-
 
 Nave.prototype.setMovimientoActivado = function (activado){
     this.movimiento.movimientoActivado = activado;
@@ -132,16 +123,13 @@ function MovimientoNave() {
     this.TECLA_GIRO_ANTIHORARIO = 7;
 
     var estadoTeclas = [false, false, false, false, false, false];
-
-    //var orientacion=vec3.fromValues(0,-1,0);
     var rotacion = mat4.create();
     mat4.identity(rotacion);
 
-    /*
-     +X frente de la nave
-     +Y techo de la nave
-     +Z
-
+    /* 
+        +X frente de la nave
+        +Y techo de la nave
+        +Z
      */
 
     var potenciaMotor = 0.01;

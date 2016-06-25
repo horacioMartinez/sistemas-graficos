@@ -1,6 +1,13 @@
 function NaveCompleteWing() {
+	var profileBuffer = [];
+	var curva = new CurvaBSpline();
+	var puntosDeControl = [ [0.5,0.5,0], [0.5,-0.5,0], [-0.5,-0.5,0], [-0.5,0.5,0], [0.5,0.5,0], [0.5,-0.5,0] ];
+	
+	// Perfil
+	profileBuffer = curva.getVertices(puntosDeControl, 0.1);
+
 	this.wing = new NaveWingWithTurbin();
-	this.wingUnion = new SpaceStationCabin();
+	this.wingUnion = new ClosedExtrusion(profileBuffer, 7, "textures/dorado.jpg");
 }
 
 NaveCompleteWing.prototype.draw = function(modelMatrix, vel) {

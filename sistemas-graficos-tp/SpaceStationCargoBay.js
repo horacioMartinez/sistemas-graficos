@@ -7,7 +7,7 @@ function SpaceStationCargoBay() {
 	// Puntos Internos
 	var puntosParedInterna1	= [ [1,1,0], [0.66,1,0], [0.33,1,0], [0,1,0] ];
 	var puntosParedInterna2	= [ [0,-1,0], [0.33,-1,0], [0.66,-1,0], [1,-1,0] ];						
-	var puntosTechoInterno = [ [0,1,0], [-0.75,1,0], [-0.75,-1,0], [0,-1,0] ];		// Normales OK							
+	var puntosTechoInterno = [ [0,1,0], [-0.75,1,0], [-0.75,-1,0], [0,-1,0] ];							
 	var puntosPisoInterno =  [ [1,1,0], [1,0.33,0], [1,-0.66,0],  [1,-1,0] ];	
 		
 	// Puntos Externos

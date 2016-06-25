@@ -71,7 +71,7 @@ ClosedExtrusion.prototype.initBuffers = function() {
 	centro_z = i - 1;
 	this.agregarTapa(centro_x, centro_y, centro_z);
 
-	this.tangent_buffer = []; //los borro a estos (estan seteados arriba) porque sino no se ve, quizas no hagan falta
+	this.tangent_buffer = []; // Se borran ya que no hacen falta
 	this.binormal_buffer = [];
 }
 
@@ -90,14 +90,9 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			this.position_buffer.push(x);
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
-			
-			// Normales
-			/*this.normal_buffer.push(perfilNormal[0]);
-			this.normal_buffer.push(perfilNormal[1]);
-			this.normal_buffer.push(perfilNormal[2]);*/
-			
+						
 			if (centro_z == 0) {
-				this.normal_buffer.push(0);		//TODO: CHECKEAR
+				this.normal_buffer.push(0);
 				this.normal_buffer.push(0);
 				this.normal_buffer.push(-1);
 			} else {
@@ -129,10 +124,10 @@ ClosedExtrusion.prototype.agregarTapa = function(centro_x, centro_y, centro_z) {
 			this.normal_buffer.push(0);
 			if (centro_z == 0) {
 				this.normal_buffer.push(-1);
-				this.texture_coord_buffer.push(1);	//Dudas
+				this.texture_coord_buffer.push(1);
 			} else {
 				this.normal_buffer.push(1);
-				this.texture_coord_buffer.push(0);	//Dudas
+				this.texture_coord_buffer.push(0);
 			}
 			
 			// Tangentes

@@ -35,7 +35,7 @@
     <script type="text/javascript" src="SpaceStationCargoBay.js"></script>
     <script type="text/javascript" src="SpaceStationCargoBayCover.js"></script>
     <script type="text/javascript" src="SpaceStationCenter.js"></script>
-    <script type="text/javascript" src="SpaceStationCabin.js"></script>
+    <script type="text/javascript" src="SpaceStationCylinder.js"></script>
     <script type="text/javascript" src="SpaceStationHumanCabin.js"></script>
     <script type="text/javascript" src="CurvaBezierCubica.js"></script>
     <script type="text/javascript" src="TexturedSphere.js"></script>
@@ -87,12 +87,12 @@
     void main(void) {
 
 		// Transformamos al vértice al espacio de la cámara
-		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+		vec4 pos_camera_view = uModelMatrix * vec4(aVertexPosition, 1.0);
 
 		// Transformamos al vértice al espacio de la proyección
-        gl_Position = uPMatrix * pos_camera_view;
+        gl_Position = uPMatrix * uViewMatrix * pos_camera_view;
 
-    	vertPos = vec3(pos_camera_view) / pos_camera_view.w;
+    	vertPos = vec3(pos_camera_view);
 
 		// Coordenada de textura sin modifiaciones
         vTextureCoord = aTextureCoord;
@@ -116,22 +116,30 @@
         varying vec2 vTextureCoord;
         varying vec3 vLightWeighting;
 
+        // Color without Texture
+        uniform vec4 uColorWOTexture;
+        uniform bool uUseTexture;
+
+        // Maps
         uniform bool uUseReflection;
         uniform bool uUseNormalMap;
         uniform float uReflectFactor;
         uniform bool uUseLightMap;
 
+        // Samplers
         uniform sampler2D uSampler;
         uniform sampler2D uReflectionSampler;
         uniform sampler2D uNormalSampler;
         uniform sampler2D uLightSampler;
 
+        // Lights
         uniform vec3 uAmbientColor;
+        uniform vec3 uAutoIluminationColor;
         uniform bool uUseDirectionalLights;
         uniform bool uUsePunctualLights;
         uniform bool uUseAutoIlumination;
         uniform float uAutoIluminationIntensity;
-        uniform vec3 uAutoIluminationColor;
+        uniform float uAmbientalLightIntensity;
         
         // Principal Light
         uniform vec3 uPrincipalLightDirection;
@@ -183,85 +191,75 @@
         vec3 lightDir = uPrincipalLightDirection;
         vec3 lightDirNormalized = normalize(lightDir);
         vec3 lightReflectDir = reflect(-lightDirNormalized, normal);
-        vec3 viewDir = normalize(-vertPos);	
+        vec3 viewDir = normalize(uCameraPos - vertPos);	
 		float diffusePrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
         vec3 r = 2.0 * diffusePrincipalLightWeighting * normal - lightDirNormalized;
         float rv = max(dot(r, viewDir), 0.0); 
-		float specularPrincipalLightWeighting = pow(rv,15.0);							 	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
-				
+		float specularPrincipalLightWeighting = pow(rv,15.0);	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+								
 		/** Secondary Light: Direccional **/
         lightDir = uSecondaryLightDirection;
         lightDirNormalized = normalize(lightDir);
         lightReflectDir = reflect(-lightDirNormalized, normal);
-        viewDir = normalize(-vertPos);	
+        viewDir = normalize(uCameraPos - vertPos);	
         float diffuseSecondaryLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
         r = 2.0 * diffuseSecondaryLightWeighting * normal - lightDirNormalized;
         rv = max(dot(r, viewDir), 0.0); 
-		float specularSecondaryLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		float specularSecondaryLightWeighting = pow(rv,7.0);	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
 				
 		/** Tertiary Lights: Puntuals **/
-		/** Puntual Light 1 **/
-        lightDir = vertPos - uPunctual1LightPosition;
+		// Puntual Light 1 
+        lightDir = uPunctual1LightPosition - vertPos;
         lightDirNormalized = normalize(lightDir);
-        lightReflectDir = reflect(-lightDirNormalized, normal);
-        viewDir = normalize(-vertPos);	
-        float diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
-        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;
+        viewDir = normalize(uCameraPos - vertPos);	
+        float diffusePunctualLightWeighting_1 = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting_1 * normal - lightDirNormalized;
         rv = max(dot(r, viewDir), 0.0); 
-		float specularPunctualLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
-		// Total
-        vec3 vP1LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
-															uPunctualSpecularColor*specularPunctualLightWeighting);
-																	
-		/** Puntual Light 2 **/
-        lightDir = vertPos - uPunctual2LightPosition;
+		float specularPunctualLightWeighting_1 = pow(rv,7.0); // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		float dist_puntual_1 = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
+
+		// Puntual Light 2
+        lightDir = uPunctual2LightPosition - vertPos;
         lightDirNormalized = normalize(lightDir);
-        lightReflectDir = reflect(-lightDirNormalized, normal);
-        viewDir = normalize(-vertPos);
-        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
-        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        viewDir = normalize(uCameraPos - vertPos);
+        float diffusePunctualLightWeighting_2 = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting_2 * normal - lightDirNormalized;	
         rv = max(dot(r, viewDir), 0.0); 
-		specularPunctualLightWeighting = pow(rv,7.0);
-		// Total
-        vec3 vP2LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
-															uPunctualSpecularColor*specularPunctualLightWeighting);
+		float specularPunctualLightWeighting_2 = pow(rv,15.0);    // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		float dist_puntual_2 = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));
 				
-		/** Puntual Light 3 **/
-        lightDir =  vertPos - uPunctual3LightPosition;
+		// Puntual Light 3
+        lightDir =  uPunctual3LightPosition - vertPos;
         lightDirNormalized = normalize(lightDir);
-        lightReflectDir = reflect(-lightDirNormalized, normal);
-        viewDir = normalize(-vertPos);	
-        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
-        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;		// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        viewDir = normalize(uCameraPos - vertPos);	
+        float diffusePunctualLightWeighting_3 = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)
+        r = 2.0 * diffusePunctualLightWeighting_3 * normal - lightDirNormalized;		
         rv = max(dot(r, viewDir), 0.0); 
-		specularPunctualLightWeighting = pow(rv,7.0);
-		// Total
-        vec3 vP3LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
-															uPunctualSpecularColor*specularPunctualLightWeighting);	
-		vP3LightWeighting = 0.0 * uPunctualDiffuseColor;	// ESTA NO LA USAMOS POR AHORA....
-					
+		float specularPunctualLightWeighting_3 = pow(rv,15.0);    // Especular: [(2*(N*L)*N - L) * V] ^ alpha
+        float dist_puntual_3 = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0)); 
 														
-		/** Puntual Light 4 **/
-        lightDir = vertPos - uPunctual4LightPosition;
+		// Puntual Light 4
+        lightDir = uPunctual4LightPosition - vertPos;
         lightDirNormalized = normalize(lightDir);
-        lightReflectDir = reflect(-lightDirNormalized, normal);
-        viewDir = normalize(-vertPos);
-        diffusePunctualLightWeighting = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)        
-        r = 2.0 * diffusePunctualLightWeighting * normal - lightDirNormalized;				
+        viewDir = normalize(uCameraPos - vertPos);
+        float diffusePunctualLightWeighting_4 = max(dot(lightDirNormalized,normal), 0.0);	// Difusa: (N*L)        
+        r = 2.0 * diffusePunctualLightWeighting_4 * normal - lightDirNormalized;				
         rv = max(dot(r, viewDir), 0.0); 
-		specularPunctualLightWeighting = pow(rv,7.0);								// Especular: [(2*(N*L)*N - L) * V] ^ alpha
-		// Total
-        vec3 vP4LightWeighting = uPunctualLightIntensity * (uPunctualDiffuseColor*diffusePunctualLightWeighting + 
-															uPunctualSpecularColor*specularPunctualLightWeighting);											
+		float specularPunctualLightWeighting_4 = pow(rv,7.0);	// Especular: [(2*(N*L)*N - L) * V] ^ alpha
+		float dist_puntual_4 = sqrt(pow(lightDir[0], 2.0) + pow(lightDir[1], 2.0) + pow(lightDir[2], 2.0));									
 
 		// Use Punctual Lights ?
 		if (!uUsePunctualLights) {
-			vP1LightWeighting = 0.0 * uPunctualDiffuseColor;
-			vP2LightWeighting = 0.0 * uPunctualDiffuseColor;
-			vP3LightWeighting = 0.0 * uPunctualDiffuseColor;
-			vP4LightWeighting = 0.0 * uPunctualDiffuseColor;
+			specularPunctualLightWeighting_1 = 0.0;
+            specularPunctualLightWeighting_2 = 0.0;
+            specularPunctualLightWeighting_3 = 0.0;
+            specularPunctualLightWeighting_4 = 0.0;
+            diffusePunctualLightWeighting_1 = 0.0;
+            diffusePunctualLightWeighting_2 = 0.0;
+            diffusePunctualLightWeighting_3 = 0.0;
+            diffusePunctualLightWeighting_4 = 0.0;
 		}
-		
+
 		// Use Directional Lights ?
 		if (!uUseDirectionalLights) {
 			diffusePrincipalLightWeighting = 0.0;
@@ -270,19 +268,28 @@
 			specularSecondaryLightWeighting = 0.0;
 		}
 		
-		/** Total Light **/
-		vec3 vPrincipalLightWeighting = uPrincipalLightIntensity * (uAmbientColor +
-																	uPrincipalDiffuseColor * diffusePrincipalLightWeighting + 
-																	uPrincipalSpecularColor * specularPrincipalLightWeighting);
-        vec3 vSecondaryLightWeighting = uSecondaryLightIntensity * (uSecondaryDiffuseColor*diffuseSecondaryLightWeighting + 
-																	uSecondarySpecularColor *specularSecondaryLightWeighting);	
-																	
-		vec3 vLightWeighting = vPrincipalLightWeighting + 
-							   vSecondaryLightWeighting +
-							   vP1LightWeighting +
-							   vP2LightWeighting +
-							   vP3LightWeighting +
-							   vP4LightWeighting;
+		// Total Light
+        // Especular
+        vec3 specularLightWeighting = uPrincipalLightIntensity * uPrincipalSpecularColor * specularPrincipalLightWeighting +
+                                      uSecondaryLightIntensity * uSecondarySpecularColor * specularSecondaryLightWeighting +
+                                      uPunctualLightIntensity  * uPunctualSpecularColor  * specularPunctualLightWeighting_1 /dist_puntual_1 +
+                                      uPunctualLightIntensity  * uPunctualSpecularColor  * specularPunctualLightWeighting_2 /dist_puntual_2 +
+                                      uPunctualLightIntensity  * uPunctualSpecularColor  * specularPunctualLightWeighting_3 /dist_puntual_3 +
+                                      uPunctualLightIntensity  * uPunctualSpecularColor  * specularPunctualLightWeighting_4 /dist_puntual_4;
+
+        // Direccional
+        vec3 direccionalLightWeighting = uPrincipalLightIntensity * uPrincipalDiffuseColor * diffusePrincipalLightWeighting +
+                                         uSecondaryLightIntensity * uSecondaryDiffuseColor * diffuseSecondaryLightWeighting +
+                                         uPunctualLightIntensity  * uPunctualDiffuseColor  * diffusePunctualLightWeighting_1 /dist_puntual_1 +
+                                         uPunctualLightIntensity  * uPunctualDiffuseColor  * diffusePunctualLightWeighting_2 /dist_puntual_2 +
+                                         uPunctualLightIntensity  * uPunctualDiffuseColor  * diffusePunctualLightWeighting_3 /dist_puntual_3 +
+                                         uPunctualLightIntensity  * uPunctualDiffuseColor  * diffusePunctualLightWeighting_4 /dist_puntual_4;
+
+        // Ambiental
+        vec3 ambientalLightWeighting = uAmbientalLightIntensity * uAmbientColor;
+	
+		// Ambiental + Direccional + Especular													
+		vec3 vLightWeighting = ambientalLightWeighting + direccionalLightWeighting + specularLightWeighting;
 							   
 		// Auto Iluminación
 		if (uUseAutoIlumination) {
@@ -291,7 +298,12 @@
 		
 		// Color
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+        if (uUseTexture) {
+            gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+        } else {
+            gl_FragColor = vec4(uColorWOTexture.rgb * vLightWeighting, uColorWOTexture.a);
+        }
+
  
 		// Mapa de Iluminación
 		if (uUseLightMap) {
@@ -303,7 +315,7 @@
 		// Mapa de Reflexion
         if (uUseReflection) {
 			vec2 reflectDir2D = vec2(reflectDir.x,reflectDir.y);
-			vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D ); /*rever lo de reflectdir2d */
+			vec4 enviromentColor = texture2D(uReflectionSampler, reflectDir2D );
 			gl_FragColor = vec4(mix(textureColor, enviromentColor, uReflectFactor).rgb * vLightWeighting, textureColor.a);
         }
         }

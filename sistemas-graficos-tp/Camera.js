@@ -49,11 +49,7 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
             this.at_point = [x, y, z];
             var pos = vec3.clone(this.eye_point);
             var target = vec3.clone(this.at_point);
-
-            //vec3.rotateY(pos, pos, [0, 0, 0], rotacionEstacion);
-            //vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
             mat4.lookAt(cameraMatrix, pos, target, this.up_point);
-            
             break;
 
         case this.TIPOS_DE_CAMARAS.cabina_nave:
@@ -72,22 +68,6 @@ Camera.prototype.update = function (cameraMatrix, rotacionEstacion) {
             throw new Error("tipo de camara invalido");
     }
 };
-
-/*
- var x = 150 * Math.sin(this.anguloPolar) * Math.cos(this.anguloAzimuth);
- var y = 150 * Math.cos(this.anguloPolar);
- var z = 150 * Math.sin(this.anguloPolar) * Math.sin(this.anguloAzimuth);
- this.at_point = [x, y, z];
-
- var aux = vec3.scale([],[-6,-3,0],10);
- vec3.rotateY(aux, aux, [0, 0, 0], rotacionEstacion);
-
- var pos = vec3.subtract([],this.nave.getPosicion(),aux);
-
- var target = vec3.clone(this.nave.getPosicion());
- //vec3.rotateY(target, target, [0, 0, 0], rotacionEstacion);
- mat4.lookAt(cameraMatrix, pos, target, this.up_point);*/
-
 
 Camera.prototype.initListeners = function () {
     var self = this;
@@ -192,7 +172,6 @@ Camera.prototype.seleccionarPrimerPersona = function () {
     this.eye_point = [7, 0, 3];
     this.anguloPolar= Math.PI/2;
     this.anguloAzimuth = Math.PI * 1.5;
-    //this.anguloAzimuth = Math.PI/8;
     this.camara_seleccionada = this.TIPOS_DE_CAMARAS.primer_persona;
     this.nave.setMovimientoActivado(false);
 };
@@ -225,6 +204,7 @@ Camera.prototype.moverAtras = function () {
     var dir = [];
     vec3.normalize(dir, this.at_point);
     vec3.scale(dir, dir, -0.1);
+    dir[1] = 0.0;
     vec3.add(this.eye_point, this.eye_point, dir);
 };
 

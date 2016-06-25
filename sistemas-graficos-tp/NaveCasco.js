@@ -141,7 +141,7 @@ NaveCasco.prototype.initBuffers = function() {
 		profileBuffer[i].position[1] /= escalado_y;
 		profileBuffer[i].position[2] /= escalado_z;
 	} 
-	
+
 	for (var i = 0; i < profileBuffer.length; ++i) {
 		var vertex = profileBuffer[i];
 		
@@ -150,8 +150,8 @@ NaveCasco.prototype.initBuffers = function() {
 		this.normal_buffer.push(vertex.normal[0], vertex.normal[1], vertex.normal[2]);
 		
 		var u = i / (profileBuffer.length - 1);
-		var v = 0.0;
+		var v = i / (profileBuffer.length - 1);
 		this.texture_coord_buffer.push(u);
-		this.texture_coord_buffer.push(i / (profileBuffer.length - 1));
+		this.texture_coord_buffer.push(v);
 	}
 }
