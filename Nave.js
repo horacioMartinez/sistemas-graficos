@@ -75,8 +75,8 @@ Nave.prototype.initListeners = function (movimiento) {
     $(document).keydown(function (event) {
         if (!movimientoNave.movimientoActivado)
             return;
-        if (event.keyCode == 107) movimientoNave.onTeclaDown(movimientoNave.TECLA_MAS);  // -
-        if (event.keyCode == 109) movimientoNave.onTeclaDown(movimientoNave.TECLA_MENOS);  // +
+        if (event.keyCode == 107 || event.keyCode == 189) movimientoNave.onTeclaDown(movimientoNave.TECLA_MAS);  // -
+        if (event.keyCode == 109 || event.keyCode == 187) movimientoNave.onTeclaDown(movimientoNave.TECLA_MENOS);  // +
         if (event.keyCode == 87)  movimientoNave.onTeclaDown(movimientoNave.TECLA_ARRIBA);  // W
         if (event.keyCode == 83)  movimientoNave.onTeclaDown(movimientoNave.TECLA_ABAJO);	// S
         if (event.keyCode == 65)  movimientoNave.onTeclaDown(movimientoNave.TECLA_DERECHA);  // W

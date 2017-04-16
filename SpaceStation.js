@@ -50,6 +50,6 @@ SpaceStation.prototype.draw = function(modelMatrix) {
 			mat4.translate(matCilinder,matCilinder,[0,0,2]);
 		}
 		mat4.translate(matCilinder,matCilinder,[0,0,8.25]);
-		this.human_cabin.draw(matCilinder);
+		//this.human_cabin.draw(matCilinder);
 	}
 }

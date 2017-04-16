@@ -1,5 +1,5 @@
 function NaveVidrio() {
-  	VertexGrid.call(this, 2, 2, 'textures/ningunojeje.jpg');
+  	VertexGrid.call(this, 2, 2, 'textures/d.jpg');
 }
 
 NaveVidrio.prototype = Object.create(VertexGrid.prototype);

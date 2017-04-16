@@ -77,15 +77,15 @@ Camera.prototype.initListeners = function () {
 
     $(document).bind('DOMMouseScroll mousewheel', function(event){
         var cant = event.originalEvent.wheelDelta || event.originalEvent.detail;
-        self.zoom(cant*2);
+        self.zoom(-cant/5);
     });
 
     window.addEventListener("keydown", function (e) {
         var tecla = e.keyCode;
-        if (tecla == self.teclaMas1 || tecla == self.teclaMas2) {
+        if (tecla == self.teclaMas1 || tecla == self.teclaMas2 || tecla == 187) {
             self.zoom(-10);
         }
-        if (tecla == self.teclaMenos1 || tecla == self.teclaMenos2) {
+        if (tecla == self.teclaMenos1 || tecla == self.teclaMenos2 || tecla == 189) {
             self.zoom(10);
         }
         if (tecla == 87) { // W
